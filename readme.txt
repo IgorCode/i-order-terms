@@ -20,26 +20,29 @@ Requires at least WordPress 3.5.
 = Installation =
 There are two options you can use to make taxonomy sortable:
 
-1. You can enable taxonomy sorting when registering taxonomy:
+[1.] You can enable taxonomy sorting when registering taxonomy:
 
-	<pre>
-	register_taxonomy( 'your-taxonomy-name', 'your-post-type', array(
-		'label' => __('Category'),
-		'i_order_terms' => true, // this parameter is used to enable sorting for taxonomy 'your-taxonomy-name'
-	));
-	</pre>
+`
+register_taxonomy( 'your-taxonomy-name', 'your-post-type', array(
+	'label' => __('Category'),
 
-2. Other option is to pass array of taxonomies (or tags/categories) via filter "i_order_terms_taxonomies" in your functions file like this:
+	// this parameter is used to enable
+	// sorting for taxonomy 'your-taxonomy-name'
+	'i_order_terms' => true,
+));
+`
 
-	<pre>
-	function custom_i_order_terms_taxonomies() {
-		return array('your-taxonomy-name', 'category');
-	}
-	add_filter( 'i_order_terms_taxonomies', 'custom_i_order_terms_taxonomies' );
-	</pre>
+[2.] Other option is to pass array of taxonomies (or tags/categories) via filter "i_order_terms_taxonomies" in your functions file like this:
 
-	This will enable taxonomy sorting for 'your-taxonomy-name' and 'category' taxonomies.
-	Naturally you will have to provide your taxonomy names.
+`
+function custom_i_order_terms_taxonomies() {
+	return array('your-taxonomy-name', 'category');
+}
+add_filter('i_order_terms_taxonomies', 'custom_i_order_terms_taxonomies');
+`
+
+This will enable taxonomy sorting for 'your-taxonomy-name' and 'category' taxonomies.
+Naturally you will have to provide your taxonomy names.
 
 = Permissions =
 User needs to have "manage_categories" permission to be able to order terms.
@@ -68,26 +71,29 @@ Plugin ads new column to 'term_taxonomy' table, make sure to backup your databas
 = Enabling plugin for taxonomy =
 There are two options you can use to make taxonomy sortable:
 
-1. You can enable taxonomy sorting when registering taxonomy:
+[1.] You can enable taxonomy sorting when registering taxonomy:
 
-	<pre>
-	register_taxonomy( 'your-taxonomy-name', 'your-post-type', array(
-		'label' => __('Category'),
-		'i_order_terms' => true, // this parameter is used to enable sorting for taxonomy 'your-taxonomy-name'
-	));
-	</pre>
+`
+register_taxonomy( 'your-taxonomy-name', 'your-post-type', array(
+	'label' => __('Category'),
 
-2. Other option is to pass array of taxonomies (or tags/categories) via filter "i_order_terms_taxonomies" in your functions file like this:
+	// this parameter is used to enable
+	// sorting for taxonomy 'your-taxonomy-name'
+	'i_order_terms' => true,
+));
+`
 
-	<pre>
-	function custom_i_order_terms_taxonomies() {
-		return array('your-taxonomy-name', 'category');
-	}
-	add_filter( 'i_order_terms_taxonomies', 'custom_i_order_terms_taxonomies' );
-	</pre>
+[2.] Other option is to pass array of taxonomies (or tags/categories) via filter "i_order_terms_taxonomies" in your functions file like this:
 
-	This will enable taxonomy sorting for 'your-taxonomy-name' and 'category' taxonomies.
-	Naturally you will have to provide your taxonomy names.
+`
+function custom_i_order_terms_taxonomies() {
+	return array('your-taxonomy-name', 'category');
+}
+add_filter('i_order_terms_taxonomies', 'custom_i_order_terms_taxonomies');
+`
+
+This will enable taxonomy sorting for 'your-taxonomy-name' and 'category' taxonomies.
+Naturally you will have to provide your taxonomy names.
 
 == Frequently Asked Questions ==
 
