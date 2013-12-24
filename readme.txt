@@ -44,9 +44,6 @@ add_filter('i_order_terms_taxonomies', 'custom_i_order_terms_taxonomies');
 This will enable taxonomy sorting for 'your-taxonomy-name' and 'category' taxonomies.
 Naturally you will have to provide your taxonomy names.
 
-= Permissions =
-User needs to have "manage_categories" permission to be able to order terms.
-
 = Example usage =
 **Fetch sorted terms from custom taxonomy:**
 
@@ -55,9 +52,6 @@ User needs to have "manage_categories" permission to be able to order terms.
 **Disable custom sorting:**
 
 `$terms = get_terms( 'your-taxonomy-name', 'i_order_terms=0' );`
-
-= Known Issues =
-Sort (drag&drop) is not available right after you add new term, you need to refresh page to be able to drag newly created term.
 
 = Warning =
 Plugin ads new column to 'term_taxonomy' table, make sure to backup your database before installing. Column is removed when you delete plugin.
@@ -98,11 +92,15 @@ Naturally you will have to provide your taxonomy names.
 == Frequently Asked Questions ==
 
 = Will this work on WordPress multisite? =
-
 Yes, it will work on multisite installation.
 
-= Where can I report a bug? =
+= What permissions are required for users to reorder terms? =
+User needs to have "manage_categories" permission to be able to order terms.
 
+= Are there any Known Issues? =
+Sort (drag&drop) is not available right after you add new term, you need to refresh page to be able to drag newly created term.
+
+= Where can I report a bug? =
 You can report bugs from contact form on my website at <a href="http://www.igorware.com/contact?referrer-ver=I-Order-Terms">http://www.igorware.com/contact</a>.
 Please make sure to include plugin version when reporting bugs.
 
