@@ -37,8 +37,9 @@ if ( !function_exists( 'add_action' ) ) {
 
 
 // load plugin
+// NOTE: plugins_url( '', __FILE__ ) not working properly with symlink folder
 require dirname( __FILE__ ) . '/code/class-i-order-terms.php';
-$GLOBALS['i_order_terms'] = new I_Order_Terms( dirname( __FILE__ ), plugins_url( '', __FILE__ ) );
+$GLOBALS['i_order_terms'] = new I_Order_Terms( dirname( __FILE__ ), plugins_url( '', 'i-order-terms/i-order-terms.php' ) );
 
 
 // plugin activation (NOTE: must be inside main file)
