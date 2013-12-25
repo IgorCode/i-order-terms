@@ -189,7 +189,7 @@ class I_Order_Terms
 		if ( isset( $args['orderby'] ) && $args['orderby'] !== 'name' ) return $clauses;
 
 		// accept only single taxonomy queries & only if taxonomy is registered for custom sorting
-		if ( count( $taxonomies ) !== 1 || !in_array( $taxonomies[0], $this->taxonomies ) ) return $clauses;
+		if ( /* count( $taxonomies ) !== 1 || */ !in_array( $taxonomies[0], $this->taxonomies ) ) return $clauses;
 
 		// user sorting by a column
 		if ( is_admin() && !empty( $_GET['orderby'] ) ) return $clauses;
