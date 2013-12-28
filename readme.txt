@@ -3,7 +3,7 @@ Contributors: x64igor
 Tags: sort, order, terms, taxonomy
 Requires at least: 3.5
 Tested up to: 3.8
-Stable tag: trunk
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,5 +88,7 @@ Please make sure to include plugin version when reporting bugs.
 * Initial release
 
 == Upgrade Notice ==
+= 1.1.0 =
+* Added option page for plugin
 = 1.0.0 =
 * Initial release
