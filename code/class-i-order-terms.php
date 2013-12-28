@@ -20,15 +20,16 @@ if ( !class_exists( 'I_Order_Terms' ) ) {
 class I_Order_Terms
 {
 	const PLUGIN_NAME = 'I Order Terms';
-	const PLUGIN_VERSION = '1.0.0';
+	const PLUGIN_VERSION = '1.1.0';
 	const WP_MIN_VERSION = '3.5';
 	const LANG_DOMAIN = 'iorderterms';
 
-	public $plugin_path;
-	public $plugin_url;
+	private $plugin_path;
+	private $plugin_url;
 
-	public $notices = array();
-	public $taxonomies = array();
+	private $notices = array();
+	private $taxonomies = array();
+	private $taxonomies_registered = array();
 
 
 	/**
@@ -65,6 +66,8 @@ class I_Order_Terms
 				add_action( 'admin_init', array($this, 'admin_init') );
 
 				add_action( 'admin_notices', array($this, 'admin_notices') );
+
+				add_action( 'admin_menu', array($this, 'admin_menu') );
 
 				add_action( 'admin_enqueue_scripts', array($this, 'admin_scripts') );
 			}
@@ -159,17 +162,26 @@ class I_Order_Terms
 	} // end activate_partial
 
 	/**
-	 * Register user defined taxonomies via filter.
+	 * Fetch taxonomies from options and register user defined taxonomies via filter.
 	 *
 	 * @return void
 	 */
 	public function after_setup_theme()
 	{
+		// fetch options from DB
+		$options = get_option( 'iorderterms.general' );
+		if ( is_array( $options ) && is_array( $options['taxonomies-sort'] ) ) {
+			$this->taxonomies = array_merge( $this->taxonomies, $options['taxonomies-sort'] );
+		}
+
 		// register taxonomies via filter
 		$taxonomies = apply_filters( 'i_order_terms_taxonomies', $this->taxonomies );
 		if ( is_array( $taxonomies ) ) {
 			$this->taxonomies = $taxonomies;
 		}
+
+		// remove dups
+		$this->taxonomies = array_unique( $this->taxonomies );
 	} // end after_setup_theme
 
 	/**
@@ -226,9 +238,19 @@ class I_Order_Terms
 	{
 		if ( isset( $args['i_order_terms'] ) && $args['i_order_terms'] != false ) {
 			$this->taxonomies[] = $taxonomy;
+			$this->taxonomies_registered[] = $taxonomy;
 		}
 	} // end registered_taxonomy
 
+	/**
+	 * Fetch taxonomies that were registered via registered_taxonomy function.
+	 *
+	 * @return array
+	 */
+	public function get_taxonomies_registered()
+	{
+		return $this->taxonomies_registered;
+	} // end get_taxonomies_registered
 
 	/**
 	 * Admin initialization - checks WP version.
@@ -257,6 +279,26 @@ class I_Order_Terms
 			echo $notice;
 		}
 	} // end admin_notices
+
+	/**
+	 * Render options page.
+	 *
+	 * @return void
+	 */
+	public function include_options()
+	{
+		include( $this->plugin_path . '/code/options.php' );
+	} // end include_options
+
+	/**
+	 * Add plugin to admin menu.
+	 *
+	 * @return void
+	 */
+	public function admin_menu()
+	{
+		add_options_page( sprintf( __( 'Settings &lsaquo; %s' ), self::PLUGIN_NAME ), self::PLUGIN_NAME, 'manage_options', 'i-order-terms-options', array($this, 'include_options') );
+	} // end admin_menu
 
 	/**
 	 * Loads scripts in admin panel.

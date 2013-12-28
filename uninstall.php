@@ -25,6 +25,10 @@ function i_order_terms_uninstall() {
 	// remove column
 	$sql_column = "ALTER TABLE `{$wpdb->term_taxonomy}` DROP COLUMN `custom_order`;";
 	$wpdb->query( $sql_column );
+
+	// remove options
+	// NOTE: delete_option for local option, delete_site_option for global option
+	delete_option( 'iorderterms.general' );
 }
 
 
