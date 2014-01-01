@@ -20,8 +20,10 @@ if ( !class_exists( 'I_Order_Terms' ) ) {
 class I_Order_Terms
 {
 	const PLUGIN_NAME = 'I Order Terms';
-	const PLUGIN_VERSION = '1.1.0';
+	const PLUGIN_VERSION = '1.2.0';
 	const WP_MIN_VERSION = '3.5';
+	const PLUGIN_BASENAME = 'i-order-terms/i-order-terms.php';
+	const PLUGIN_OPTIONS_PAGE = 'iorderterms_general';
 	const LANG_DOMAIN = 'iorderterms';
 
 	private $plugin_path;
@@ -70,6 +72,16 @@ class I_Order_Terms
 				add_action( 'admin_menu', array($this, 'admin_menu') );
 
 				add_action( 'admin_enqueue_scripts', array($this, 'admin_scripts') );
+
+				add_filter( 'plugin_action_links_' . self::PLUGIN_BASENAME, array($this, 'action_links') );
+
+
+				// update option name because of WP sanitation bug
+				$option = get_option( 'iorderterms.general', null );
+				if ( isset( $option ) ) {
+					add_option( 'iorderterms_general', $option, '', 'yes' );
+					delete_option( 'iorderterms.general' );
+				}
 			}
 		}
 	} // end __construct
@@ -110,23 +122,23 @@ class I_Order_Terms
 	/**
 	 * Installs plugin for new blog in multisite environment.
 	 *
-	 * @param int    $blog_id Blog ID.
-	 * @param int    $user_id User ID.
-	 * @param string $domain  Site domain.
-	 * @param string $path    Site path.
-	 * @param int    $site_id Site ID. Only relevant on multi-network installs.
-	 * @param array  $meta    Meta data. Used to set initial site options.
+	 * @param  int    $blog_id Blog ID.
+	 * @param  int    $user_id User ID.
+	 * @param  string $domain  Site domain.
+	 * @param  string $path    Site path.
+	 * @param  int    $site_id Site ID. Only relevant on multi-network installs.
+	 * @param  array  $meta    Meta data. Used to set initial site options.
 	 * @return void
 	 */
 	public function wpmu_new_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
 		global $wpdb;
 
-		if ( is_plugin_active_for_network( 'i-order-terms/i-order-terms.php' ) ) {
+		if ( is_plugin_active_for_network( self::PLUGIN_BASENAME ) ) {
 			$current_blog = $wpdb->blogid;
 
 			// activate plugin on new blog
 			switch_to_blog($blog_id);
-			I_Order_Terms::activate_partial();
+			self::activate_partial();
 
 			switch_to_blog($current_blog);
 		}
@@ -162,6 +174,20 @@ class I_Order_Terms
 	} // end activate_partial
 
 	/**
+	 * Adds plugin action links.
+	 *
+	 * @param  array $links List of plugin links.
+	 * @return array
+	 */
+	public function action_links( $links )
+	{
+		// add settings link
+		array_unshift( $links, '<a href="' . admin_url( 'options-general.php?page=i-order-terms-options' ) . '">' . __( 'Settings', self::LANG_DOMAIN ) . '</a>' );
+
+		return $links;
+	} // end action_links
+
+	/**
 	 * Fetch taxonomies from options and register user defined taxonomies via filter.
 	 *
 	 * @return void
@@ -169,8 +195,8 @@ class I_Order_Terms
 	public function after_setup_theme()
 	{
 		// fetch options from DB
-		$options = get_option( 'iorderterms.general' );
-		if ( is_array( $options ) && is_array( $options['taxonomies-sort'] ) ) {
+		$options = get_option( 'iorderterms_general' );
+		if ( is_array( $options ) && isset( $options['taxonomies-sort'] ) && is_array( $options['taxonomies-sort'] ) ) {
 			$this->taxonomies = array_merge( $this->taxonomies, $options['taxonomies-sort'] );
 		}
 
@@ -187,9 +213,9 @@ class I_Order_Terms
 	/**
 	 * Used for sorting taxonomies.
 	 *
-	 * @param array  $clauses    SQL clauses.
-	 * @param mixed  $taxonomies Taxonomy name.
-	 * @param array  $args       Query arguments.
+	 * @param  array  $clauses    SQL clauses.
+	 * @param  mixed  $taxonomies Taxonomy name.
+	 * @param  array  $args       Query arguments.
 	 * @return array Return SQL clauses.
 	 */
 	public function terms_clauses( $clauses, $taxonomies, $args )
@@ -253,7 +279,7 @@ class I_Order_Terms
 	} // end get_taxonomies_registered
 
 	/**
-	 * Admin initialization - checks WP version.
+	 * Admin initialization.
 	 *
 	 * @return void
 	 */
@@ -266,6 +292,11 @@ class I_Order_Terms
 		if ( !function_exists( 'is_multisite' ) || version_compare( $wp_version, self::WP_MIN_VERSION, '<' ) ) {
 			$this->notices[] = '<div id="i-order-terms-warning" class="updated"><p>' .sprintf( __( '%s plugin requires WordPress %s or higher. Please <a href="http://codex.wordpress.org/Upgrading_WordPress" target="_blank">upgrade WordPress</a> to a current version.', self::LANG_DOMAIN ), self::PLUGIN_NAME, self::WP_MIN_VERSION ). '</p></div>';
 		}
+
+		// register settings
+		register_setting( self::PLUGIN_OPTIONS_PAGE, 'iorderterms_general', array($this, 'settings_general_sanitize') );
+		add_settings_section( 'general', '', array($this, 'settings_general_intro'), self::PLUGIN_OPTIONS_PAGE );
+		add_settings_field( 'general_enable_sorting', __( 'Enable sorting', self::LANG_DOMAIN ), array($this, 'settings_general_enable_sorting'), self::PLUGIN_OPTIONS_PAGE, 'general' );
 	} // end admin_init
 
 	/**
@@ -275,20 +306,129 @@ class I_Order_Terms
 	 */
 	public function admin_notices()
 	{
-		foreach ($this->notices as $notice) {
+		foreach ( $this->notices as $notice ) {
 			echo $notice;
 		}
 	} // end admin_notices
 
 	/**
-	 * Render options page.
+	 * Render settings page.
 	 *
 	 * @return void
 	 */
-	public function include_options()
+	public function settings_general_print()
 	{
-		include( $this->plugin_path . '/code/options.php' );
-	} // end include_options
+		?>
+
+		<div class="wrap">
+			<h2><?php echo esc_html( sprintf( __( '%s : Settings', self::LANG_DOMAIN ), self::PLUGIN_NAME ) ); ?></h2>
+
+			<form method="post" action="options.php">
+				<?php settings_fields( self::PLUGIN_OPTIONS_PAGE ); ?>
+
+				<?php do_settings_sections( 'iorderterms_general' ); ?>
+
+				<?php submit_button(); ?>
+			</form>
+		</div>
+
+		<?php
+
+	} // end settings_general_print
+
+	/**
+	 * Sanitizes general settings input data.
+	 *
+	 * @param  array $options Input data.
+	 * @return array
+	 */
+	public function settings_general_sanitize( $options )
+	{
+		if ( !isset( $options ) || !is_array( $options ) ) {
+			$options = array();
+		}
+
+		if ( !isset( $options['taxonomies-sort'] ) || !is_array( $options['taxonomies-sort'] ) ) {
+			$options['taxonomies-sort'] = array();
+		}
+
+		// check if taxonomy exists
+		foreach ( $options['taxonomies-sort'] as $key => $taxonomy ) {
+			if ( !taxonomy_exists( $taxonomy ) ) {
+				unset( $options['taxonomies-sort'][$key] );
+			}
+		}
+
+		return $options;
+	} // end settings_general_sanitize
+
+	/**
+	 * Print the general settings intro text.
+	 *
+	 * @return void
+	 */
+	public function settings_general_intro()
+	{
+		// nothing to say at this time
+	} // end settings_general_intro
+
+	/**
+	 * Render sorting option.
+	 *
+	 * @return void
+	 */
+	public function settings_general_enable_sorting()
+	{
+		// fetch options
+		$options = get_option( 'iorderterms_general' );
+		if ( !is_array( $options ) ) {
+			$options = array();
+		}
+
+		?>
+
+		<fieldset>
+			<legend class="screen-reader-text"><span><?php esc_html_e( 'Enable sorting for taxonomies', self::LANG_DOMAIN ); ?></span></legend>
+
+			<?php
+			if ( !isset( $options['taxonomies-sort'] ) || !is_array( $options['taxonomies-sort'] ) ) {
+				$options['taxonomies-sort'] = array();
+			}
+
+			// fetch registered taxonomies (registered via register_taxonomy function)
+			$taxonomies_registered = $this->get_taxonomies_registered();
+
+			// fetch all taxonomies with standard WordPress UI that plugin supports
+			$taxonomies = get_taxonomies( array('show_ui' => true), 'objects' );
+			foreach ( $taxonomies as $taxonomy ) {
+				if ( $taxonomy->_builtin && in_array( $taxonomy->name, array('nav_menu') ) ) {
+					continue;
+				}
+
+				$taxonomy_name_attr = esc_attr( $taxonomy->name );
+
+				$is_registered = in_array( $taxonomy->name, $taxonomies_registered );
+				$is_checked = $is_registered || in_array( $taxonomy->name, $options['taxonomies-sort'] );
+
+				?>
+
+				<label for="<?php echo "taxonomy-{$taxonomy_name_attr}"; ?>" title="<?php echo esc_attr( $taxonomy->description ); ?>">
+					<input id="<?php echo "taxonomy-{$taxonomy_name_attr}"; ?>" name="iorderterms_general[taxonomies-sort][]" type="checkbox" value="<?php echo $taxonomy_name_attr; ?>"
+						<?php checked( '1', $is_checked, true ); ?>
+						<?php disabled( '1', $is_registered, true ); ?> />
+					<span><?php echo esc_html( $taxonomy->label ); ?></span>
+				</label>
+				<br />
+
+				<?php
+			}
+			?>
+
+			<p class="description"><?php esc_html_e( "(Taxonomies set as sortable via 'register_taxonomy' function can't be unchecked from options.)", self::LANG_DOMAIN ); ?></p>
+		 </fieldset>
+
+		<?php
+	}
 
 	/**
 	 * Add plugin to admin menu.
@@ -297,7 +437,7 @@ class I_Order_Terms
 	 */
 	public function admin_menu()
 	{
-		add_options_page( sprintf( __( 'Settings &lsaquo; %s' ), self::PLUGIN_NAME ), self::PLUGIN_NAME, 'manage_options', 'i-order-terms-options', array($this, 'include_options') );
+		add_options_page( sprintf( __( 'Settings &lsaquo; %s', self::LANG_DOMAIN ), self::PLUGIN_NAME ), self::PLUGIN_NAME, 'manage_options', 'i-order-terms-options', array($this, 'settings_general_print') );
 	} // end admin_menu
 
 	/**
@@ -376,7 +516,7 @@ class I_Order_Terms
 	public function ajax_order_terms()
 	{
 		if ( !current_user_can( 'manage_categories' ) ) {
-			die( json_encode( array('status' => 'error', 'error' => __( 'User does not have permission to perform this action.', I_Order_Terms::LANG_DOMAIN ) ) ) );
+			die( json_encode( array('status' => 'error', 'error' => __( 'User does not have permission to perform this action.', self::LANG_DOMAIN ) ) ) );
 		}
 
 
@@ -388,14 +528,14 @@ class I_Order_Terms
 
 		// NOTE: term_prev_id/term_next_id can be null when moving to first/last position (not both at once)
 		if ( !$term_id || !$taxonomy || !( $term_prev_id || $term_next_id ) ) {
-			die( $this->ajax_response( 'error', __( 'Input data fail!', I_Order_Terms::LANG_DOMAIN ) ) );
+			die( $this->ajax_response( 'error', __( 'Input data fail!', self::LANG_DOMAIN ) ) );
 		}
 
 
 		// fetch parent from moved term
 		$moved_term = get_term_by('id', $term_id, $taxonomy);
 		if ( empty( $moved_term ) ) {
-			die( $this->ajax_response( 'error', __( 'Input data fail, no term found!', I_Order_Terms::LANG_DOMAIN ) ) );
+			die( $this->ajax_response( 'error', __( 'Input data fail, no term found!', self::LANG_DOMAIN ) ) );
 		}
 		$term_parent_id = (int)$moved_term->parent;
 
@@ -411,7 +551,7 @@ class I_Order_Terms
 
 					// set custom order in database - for moved item
 					if ( $this->reorder_term( $taxonomy, $moved_term, $index ) === false ) {
-						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', I_Order_Terms::LANG_DOMAIN ) ) );
+						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
 					}
 
 					// new index for next item
@@ -426,7 +566,7 @@ class I_Order_Terms
 
 						// set new custom order
 						if ( $this->reorder_term( $taxonomy, $term, $index ) === false ) {
-							die( $this->ajax_response( 'error', __( 'Unable to save new term order!', I_Order_Terms::LANG_DOMAIN ) ) );
+							die( $this->ajax_response( 'error', __( 'Unable to save new term order!', self::LANG_DOMAIN ) ) );
 						}
 					}
 				}
@@ -439,7 +579,7 @@ class I_Order_Terms
 
 					// set custom order in database - for moved item
 					if ( $this->reorder_term( $taxonomy, $moved_term, $index ) === false ) {
-						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', I_Order_Terms::LANG_DOMAIN ) ) );
+						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
 					}
 				}
 

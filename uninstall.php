@@ -28,7 +28,8 @@ function i_order_terms_uninstall() {
 
 	// remove options
 	// NOTE: delete_option for local option, delete_site_option for global option
-	delete_option( 'iorderterms.general' );
+	delete_option( 'iorderterms.general' ); // old option name
+	delete_option( 'iorderterms_general' );
 }
 
 
