@@ -137,10 +137,10 @@ class I_Order_Terms
 			$current_blog = $wpdb->blogid;
 
 			// activate plugin on new blog
-			switch_to_blog($blog_id);
+			switch_to_blog( $blog_id );
 			self::activate_partial();
 
-			switch_to_blog($current_blog);
+			switch_to_blog( $current_blog );
 		}
 	} // end wpmu_new_blog
 
@@ -474,11 +474,21 @@ class I_Order_Terms
 	 * @param  int    $custom_order Taxonomy name.
 	 * @return int|bool
 	 */
-	private function reorder_term( $taxonomy, $term, $custom_order )
+	private function reorder_term( $taxonomy, $term, $custom_order, $new_parent_id = false )
 	{
 		global $wpdb;
 
-		$ret = $wpdb->update( $wpdb->term_taxonomy, array('custom_order' => $custom_order), array('term_taxonomy_id' => $term->term_taxonomy_id) );
+		// new data
+		$data = array(
+			'custom_order' => $custom_order,
+		);
+
+		// update parent ID
+		if ( $new_parent_id !== false && $term->parent != $new_parent_id ) {
+			$data['parent'] = $new_parent_id;
+		}
+
+		$ret = $wpdb->update( $wpdb->term_taxonomy, $data, array('term_taxonomy_id' => $term->term_taxonomy_id) );
 		clean_term_cache( $term->term_id, $taxonomy );
 
 		return $ret;
@@ -516,7 +526,7 @@ class I_Order_Terms
 	public function ajax_order_terms()
 	{
 		if ( !current_user_can( 'manage_categories' ) ) {
-			die( json_encode( array('status' => 'error', 'error' => __( 'User does not have permission to perform this action.', self::LANG_DOMAIN ) ) ) );
+			die( $this->ajax_response( 'error', __( 'User does not have permission to perform this action.', self::LANG_DOMAIN ) ) );
 		}
 
 
@@ -532,25 +542,63 @@ class I_Order_Terms
 		}
 
 
-		// fetch parent from moved term
-		$moved_term = get_term_by('id', $term_id, $taxonomy);
+		// fetch moved term
+		$moved_term = get_term_by( 'id', $term_id, $taxonomy );
 		if ( empty( $moved_term ) ) {
-			die( $this->ajax_response( 'error', __( 'Input data fail, no term found!', self::LANG_DOMAIN ) ) );
+			die( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
 		}
 		$term_parent_id = (int)$moved_term->parent;
 
+		// fetch prev term
+		if ( $term_prev_id ) {
+			$term_prev = get_term_by( 'id', $term_prev_id, $taxonomy );
+			if ( empty( $term_prev ) ) {
+				die( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
+			}
+			$term_prev_parent_id = (int)$term_prev->parent;
+		} else {
+			$term_prev_parent_id = null;
+		}
+
+		// fetch next term
+		if ( $term_next_id ) {
+			$term_next = get_term_by( 'id', $term_next_id, $taxonomy );
+			if ( empty( $term_next ) ) {
+				die( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
+			}
+			$term_next_parent_id = (int)$term_next->parent;
+		} else {
+			$term_next_parent_id = null;
+		}
+
+
+		// parent ID for sorting
+		if ( $term_next_id && isset( $term_next_parent_id ) && ( $term_prev_id == $term_next_parent_id || $term_parent_id != $term_prev_parent_id ) ) {
+			// same level as next term
+			$new_parent_id = $term_next_parent_id;
+			if ( isset( $term_prev_id ) ) {
+				$term_prev_id = null;
+			}
+		} else if ( $term_prev_id && isset( $term_prev_parent_id ) ) {
+			// same level as previous term
+			$new_parent_id = $term_prev_parent_id;
+			if ( isset( $term_next_id ) ) {
+				$term_next_id = null;
+			}
+		}
+
 
 		// sort
-		$terms = get_terms( $taxonomy, "parent={$term_parent_id}&hide_empty=0&i_order_terms=1&orderby=name&order=ASC" );
+		$terms = get_terms( $taxonomy, "parent={$new_parent_id}&hide_empty=0&i_order_terms=1&orderby=name&order=ASC" );
 		if ( !empty( $terms ) ) {
 
 			$index = 1;
-			foreach ($terms as $term) {
-				if ( $term_next_id && $term->term_id == $term_next_id ) {
+			foreach ( $terms as $term ) {
+				if ( isset( $term_next_id ) && $term->term_id == $term_next_id ) {
 					// find term insert position
 
 					// set custom order in database - for moved item
-					if ( $this->reorder_term( $taxonomy, $moved_term, $index ) === false ) {
+					if ( $this->reorder_term( $taxonomy, $moved_term, $index, $new_parent_id ) === false ) {
 						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
 					}
 
@@ -558,11 +606,11 @@ class I_Order_Terms
 					$index++;
 				}
 
-				if ( $term->term_id != $term_id ) {
+				if ( $term->term_id != $moved_term->term_id ) {
 					// for all but moved item
 
 					if ( $term->custom_order != $index ) {
-						// set in DB if custom_order changed
+						// update in DB if custom_order changed
 
 						// set new custom order
 						if ( $this->reorder_term( $taxonomy, $term, $index ) === false ) {
@@ -571,14 +619,14 @@ class I_Order_Terms
 					}
 				}
 
-				if ( !$term_next_id && $term->term_id == $term_prev_id ) {
+				if ( !isset( $term_next_id ) && $term->term_id == $term_prev_id ) {
 					// find term insert position
 
 					// new index for current item
 					$index++;
 
 					// set custom order in database - for moved item
-					if ( $this->reorder_term( $taxonomy, $moved_term, $index ) === false ) {
+					if ( $this->reorder_term( $taxonomy, $moved_term, $index, $new_parent_id ) === false ) {
 						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
 					}
 				}
@@ -588,10 +636,15 @@ class I_Order_Terms
 		}
 
 
-		// force reload if moved term has children
+		// force page reload if changed parent ID or moved term has children
+		// TODO: refresh without page reload
 		if ( !$force_reload ) {
-			$moved_term_children = get_terms( $taxonomy, "child_of={$term_id}&hide_empty=0&fields=ids&number=1" );
-			$force_reload = !empty( $moved_term_children );
+			$force_reload = ( $term_parent_id != $new_parent_id );
+
+			if ( !$force_reload ) {
+				$moved_term_children = get_terms( $taxonomy, "child_of={$moved_term->term_id}&hide_empty=0&fields=ids&number=1" );
+				$force_reload = !empty( $moved_term_children );
+			}
 		}
 
 
