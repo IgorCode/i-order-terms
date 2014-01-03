@@ -78,11 +78,11 @@ Please make sure to include plugin version when reporting bugs.
 
 == Screenshots ==
 1. The screenshot of Category section after drag and drop reorder operation.
-2. Options section where you can select which taxonomy should be sortable.
+2. Settings section where you can select which taxonomy should be sortable.
 
 == Changelog ==
 = 1.2.0 =
-* Added link to options on plugins page
+* Added link to settings on plugins page
 * Settings page completely rewritten to use WordPress Settings API
 * Drag & drop can now be done in different levels i.e. you can now change parent of dragged item
 = 1.1.0 =
