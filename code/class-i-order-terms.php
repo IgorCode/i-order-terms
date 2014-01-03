@@ -275,6 +275,12 @@ class I_Order_Terms
 	 */
 	public function get_taxonomies_registered()
 	{
+		// filter taxonomies
+		$taxonomies = apply_filters( 'i_order_terms_taxonomies', $this->taxonomies_registered );
+		if ( is_array( $taxonomies ) ) {
+			$this->taxonomies_registered = $taxonomies;
+		}
+
 		return $this->taxonomies_registered;
 	} // end get_taxonomies_registered
 
@@ -424,7 +430,7 @@ class I_Order_Terms
 			}
 			?>
 
-			<p class="description"><?php esc_html_e( "(Taxonomies set as sortable via 'register_taxonomy' function can't be unchecked from options.)", self::LANG_DOMAIN ); ?></p>
+			<p class="description"><?php esc_html_e( "(Taxonomies set as sortable via 'i_order_terms_taxonomies' filter or 'register_taxonomy' function can't be unchecked from options.)", self::LANG_DOMAIN ); ?></p>
 		 </fieldset>
 
 		<?php
