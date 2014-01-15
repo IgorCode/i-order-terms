@@ -6,8 +6,7 @@
 
 // don't expose any info if called directly
 if ( !function_exists( 'add_action' ) ) {
-	echo 'Hello! I freelance as a plugin, you can\'t call me directly. :/';
-	exit;
+	exit( "Hello! I freelance as a plugin, you can't call me directly. :/" );
 }
 
 
@@ -20,7 +19,7 @@ if ( !class_exists( 'I_Order_Terms' ) ) {
 class I_Order_Terms
 {
 	const PLUGIN_NAME = 'I Order Terms';
-	const PLUGIN_VERSION = '1.2.0';
+	const PLUGIN_VERSION = '1.3.0';
 	const WP_MIN_VERSION = '3.5';
 	const PLUGIN_BASENAME = 'i-order-terms/i-order-terms.php';
 	const PLUGIN_OPTIONS_PAGE = 'iorderterms_general';
@@ -461,6 +460,10 @@ class I_Order_Terms
 
 		// load script only on taxonomy screen and when orderby is not selected
 		if ( empty( $_GET['orderby'] ) && !empty( $taxonomy ) && in_array( $taxonomy, $this->taxonomies ) ) {
+			// custom styles
+			wp_register_style( 'iorderterms_custom_order', $this->plugin_url . '/css/admin-i-order-terms.css', false, self::PLUGIN_VERSION );
+			wp_enqueue_style( 'iorderterms_custom_order' );
+
 			// WP scripts
 			wp_enqueue_script( 'jquery-ui-sortable' );
 
@@ -532,7 +535,7 @@ class I_Order_Terms
 	public function ajax_order_terms()
 	{
 		if ( !current_user_can( 'manage_categories' ) ) {
-			die( $this->ajax_response( 'error', __( 'User does not have permission to perform this action.', self::LANG_DOMAIN ) ) );
+			exit( $this->ajax_response( 'error', __( 'User does not have permission to perform this action.', self::LANG_DOMAIN ) ) );
 		}
 
 
@@ -544,14 +547,14 @@ class I_Order_Terms
 
 		// NOTE: term_prev_id/term_next_id can be null when moving to first/last position (not both at once)
 		if ( !$term_id || !$taxonomy || !( $term_prev_id || $term_next_id ) ) {
-			die( $this->ajax_response( 'error', __( 'Input data fail!', self::LANG_DOMAIN ) ) );
+			exit( $this->ajax_response( 'error', __( 'Input data fail!', self::LANG_DOMAIN ) ) );
 		}
 
 
 		// fetch moved term
 		$moved_term = get_term_by( 'id', $term_id, $taxonomy );
 		if ( empty( $moved_term ) ) {
-			die( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
+			exit( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
 		}
 		$term_parent_id = (int)$moved_term->parent;
 
@@ -559,7 +562,7 @@ class I_Order_Terms
 		if ( $term_prev_id ) {
 			$term_prev = get_term_by( 'id', $term_prev_id, $taxonomy );
 			if ( empty( $term_prev ) ) {
-				die( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
+				exit( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
 			}
 			$term_prev_parent_id = (int)$term_prev->parent;
 		} else {
@@ -570,7 +573,7 @@ class I_Order_Terms
 		if ( $term_next_id ) {
 			$term_next = get_term_by( 'id', $term_next_id, $taxonomy );
 			if ( empty( $term_next ) ) {
-				die( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
+				exit( $this->ajax_response( 'error', __( 'Input data fail, no term found! Please try to reload page first.', self::LANG_DOMAIN ) ) );
 			}
 			$term_next_parent_id = (int)$term_next->parent;
 		} else {
@@ -605,7 +608,7 @@ class I_Order_Terms
 
 					// set custom order in database - for moved item
 					if ( $this->reorder_term( $taxonomy, $moved_term, $index, $new_parent_id ) === false ) {
-						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
+						exit( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
 					}
 
 					// new index for next item
@@ -620,7 +623,7 @@ class I_Order_Terms
 
 						// set new custom order
 						if ( $this->reorder_term( $taxonomy, $term, $index ) === false ) {
-							die( $this->ajax_response( 'error', __( 'Unable to save new term order!', self::LANG_DOMAIN ) ) );
+							exit( $this->ajax_response( 'error', __( 'Unable to save new term order!', self::LANG_DOMAIN ) ) );
 						}
 					}
 				}
@@ -633,7 +636,7 @@ class I_Order_Terms
 
 					// set custom order in database - for moved item
 					if ( $this->reorder_term( $taxonomy, $moved_term, $index, $new_parent_id ) === false ) {
-						die( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
+						exit( $this->ajax_response( 'error', __( 'Unable to save new term order for current item!', self::LANG_DOMAIN ) ) );
 					}
 				}
 
@@ -655,7 +658,7 @@ class I_Order_Terms
 
 
 		// success
-		die( $this->ajax_response( 'ok', '', $force_reload ) );
+		exit( $this->ajax_response( 'ok', '', $force_reload ) );
 	} // end ajax_order_terms
 
 } // I_Order_Terms

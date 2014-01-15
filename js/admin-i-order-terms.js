@@ -1,4 +1,9 @@
-/*global jQuery:true, ajaxurl:true */
+/* global jQuery:true, ajaxurl:true */
+
+/**
+ * @package IOrderTerms
+ * @author Igor Jerosimic
+ */
 
 // inspired by Simple Page Ordering plugin ( http://wordpress.org/extend/plugins/simple-page-ordering/ )
 jQuery(document).ready(function($) {
@@ -147,5 +152,11 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	$('table.wp-list-table > tbody > tr').css('cursor', 'move');
+
+	// catch add-tag ajax calls
+	$(document).ajaxSuccess(function(event, xhr, settings) {
+		if (settings.data && settings.data.indexOf('action=add-tag') !== -1 && xhr.responseText && xhr.responseText.indexOf('wp_error') === -1) {
+			$sort.sortable('refresh');
+		}
+	});
 });

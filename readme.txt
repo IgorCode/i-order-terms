@@ -3,7 +3,7 @@ Contributors: x64igor
 Tags: sort, order, terms, taxonomy
 Requires at least: 3.5
 Tested up to: 3.8
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,9 +69,6 @@ Yes, it will work on multisite installation.
 = What permissions are required for users to reorder terms? =
 User needs to have "manage_categories" permission to be able to order terms.
 
-= Are there any Known Issues? =
-Sort (drag&drop) is not available right after you add new term, you need to refresh page to be able to drag newly created term.
-
 = Where can I report a bug? =
 You can report bugs from contact form on my website at <a href="http://www.igorware.com/contact?referrer-ver=I-Order-Terms">http://www.igorware.com/contact</a>.
 Please make sure to include plugin version when reporting bugs.
@@ -81,6 +78,10 @@ Please make sure to include plugin version when reporting bugs.
 2. Settings section where you can select which taxonomy should be sortable.
 
 == Changelog ==
+= 1.3.0 =
+* Sort (drag&drop) is now available right after you add new term, no need to refresh page like before
+* Improved security by preventing directory browsing
+* Removed screenshots from plugin folder, this should save you some bandwith :)
 = 1.2.0 =
 * Added link to settings on plugins page
 * Settings page completely rewritten to use WordPress Settings API
@@ -92,6 +93,8 @@ Please make sure to include plugin version when reporting bugs.
 * Initial release
 
 == Upgrade Notice ==
+= 1.3.0 =
+* Sort (drag&drop) is now available right after you add new term, no need to refresh page like before
 = 1.2.0 =
 * Settings page rewritten and drag & drop now able to change parent of dragged item
 = 1.1.0 =

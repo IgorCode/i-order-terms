@@ -1,0 +1,15 @@
+/**
+ * @package IOrderTerms
+ * @author Igor Jerosimic
+ */
+
+.wp-list-table > .ui-sortable > tr {
+	cursor: move;
+}
+.wp-list-table > .ui-sortable-disabled > tr {
+	cursor: default;
+}
+.wp-list-table .ui-sortable-helper {
+	border: 1px solid #e1e1e1;
+	border-width: 1px 0;
+}
