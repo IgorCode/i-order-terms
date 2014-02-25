@@ -477,7 +477,6 @@ class I_Order_Terms
 	/**
 	 * Save new term order in database.
 	 *
-	 * @access private
 	 * @param  string $taxonomy     Taxonomy name.
 	 * @param  object $term         Term object.
 	 * @param  int    $custom_order Taxonomy name.
@@ -506,7 +505,6 @@ class I_Order_Terms
 	/**
 	 * Encode JSON response.
 	 *
-	 * @access private
 	 * @param  string $status       Response status.
 	 * @param  string $message      Textual message for user.
 	 * @param  bool   $force_reload Should we force terms (page) reload.
