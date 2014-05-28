@@ -3,7 +3,7 @@ Contributors: x64igor
 Tags: sort, order, terms, taxonomy
 Requires at least: 3.5
 Tested up to: 3.9
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,8 @@ Please make sure to include plugin version when reporting bugs.
 2. Settings section where you can select which taxonomy should be sortable.
 
 == Changelog ==
+= 1.3.1 =
+* Shows taxonomy name next to taxonomy label in plugin settings. This should avoid confusion when there are several taxonomies with same label
 = 1.3.0 =
 * Sort (drag&drop) is now available right after you add new term, no need to refresh page like before
 * Improved security by preventing directory browsing
@@ -93,6 +95,8 @@ Please make sure to include plugin version when reporting bugs.
 * Initial release
 
 == Upgrade Notice ==
+= 1.3.1 =
+* Shows taxonomy name next to taxonomy label in plugin settings
 = 1.3.0 =
 * Sort (drag&drop) is now available right after you add new term, no need to refresh page like before
 = 1.2.0 =

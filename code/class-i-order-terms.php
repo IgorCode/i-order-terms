@@ -19,7 +19,7 @@ if ( !class_exists( 'I_Order_Terms' ) ) {
 class I_Order_Terms
 {
 	const PLUGIN_NAME = 'I Order Terms';
-	const PLUGIN_VERSION = '1.3.0';
+	const PLUGIN_VERSION = '1.3.1';
 	const WP_MIN_VERSION = '3.5';
 	const PLUGIN_BASENAME = 'i-order-terms/i-order-terms.php';
 	const PLUGIN_OPTIONS_PAGE = 'iorderterms_general';
@@ -422,6 +422,7 @@ class I_Order_Terms
 						<?php checked( '1', $is_checked, true ); ?>
 						<?php disabled( '1', $is_registered, true ); ?> />
 					<span><?php echo esc_html( $taxonomy->label ); ?></span>
+					<code><?php echo esc_html( $taxonomy->name ); ?></code>
 				</label>
 				<br />
 
