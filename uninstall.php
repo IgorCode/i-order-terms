@@ -4,7 +4,7 @@
  * @author Igor Jerosimic
  */
 
-// exit if uninstall not called from WordPress
+// Exit if uninstall not called from WordPress
 if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }

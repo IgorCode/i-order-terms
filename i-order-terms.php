@@ -3,9 +3,11 @@
  * Plugin Name: I Order Terms
  * Plugin URI: http://wordpress.org/plugins/i-order-terms/
  * Description: Allows theme developers to add order/sort functionality for categories, tags and terms.
- * Version: 1.3.1
+ * Version: 1.4.0
  * Author: Igor Jerosimic
  * Author URI: http://igor.jerosimic.net/
+ * Text Domain: i-order-terms
+ * Domain Path: /languages
  * License: GPLv2 or later
  *
  *
@@ -29,9 +31,9 @@
  * @author Igor Jerosimic
  */
 
-// don't expose any info if called directly
-if ( !function_exists( 'add_action' ) ) {
-	exit( "Hello! I freelance as a plugin, you can't call me directly. :/" );
+// Don't allow direct access
+if ( !defined( 'ABSPATH' ) ) {
+	die ( "Hello! I freelance as a plugin, you can't call me directly. :/" );
 }
 
 
@@ -41,5 +43,5 @@ require dirname( __FILE__ ) . '/code/class-i-order-terms.php';
 $GLOBALS['i_order_terms'] = new I_Order_Terms( dirname( __FILE__ ), plugins_url( '', 'i-order-terms/i-order-terms.php' ) );
 
 
-// plugin activation (NOTE: must be inside main file)
+// Plugin activation (NOTE: must be hooked inside main file)
 register_activation_hook( __FILE__, array( 'I_Order_Terms', 'activate' ) );
