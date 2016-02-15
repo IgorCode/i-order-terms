@@ -5,7 +5,7 @@
  * @author Igor Jerosimic
  */
 
-// inspired by Simple Page Ordering plugin ( http://wordpress.org/extend/plugins/simple-page-ordering/ )
+// inspired by Simple Page Ordering plugin ( https://wordpress.org/plugins/simple-page-ordering/ )
 jQuery(document).ready(function($) {
 	"use strict";
 

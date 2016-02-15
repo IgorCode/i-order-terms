@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: I Order Terms
- * Plugin URI: http://wordpress.org/plugins/i-order-terms/
+ * Plugin URI: https://wordpress.org/plugins/i-order-terms/
  * Description: Allows theme developers to add order/sort functionality for categories, tags and terms.
  * Version: 1.4.0
  * Author: Igor Jerosimic

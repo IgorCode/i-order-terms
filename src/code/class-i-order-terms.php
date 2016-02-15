@@ -300,7 +300,7 @@ class I_Order_Terms
 
 		// restrict plugin usage based on WordPress version
 		if ( !function_exists( 'is_multisite' ) || version_compare( $wp_version, self::WP_MIN_VERSION, '<' ) ) {
-			$this->notices[] = '<div id="i-order-terms-warning" class="updated"><p>' .sprintf( __( '%s plugin requires WordPress %s or higher. Please <a href="http://codex.wordpress.org/Upgrading_WordPress" target="_blank">upgrade WordPress</a> to a current version.', 'i-order-terms' ), self::PLUGIN_NAME, self::WP_MIN_VERSION ). '</p></div>';
+			$this->notices[] = '<div id="i-order-terms-warning" class="updated"><p>' .sprintf( __( '%s plugin requires WordPress %s or higher. Please <a href="https://codex.wordpress.org/Updating_WordPress" target="_blank">upgrade WordPress</a> to a current version.', 'i-order-terms' ), self::PLUGIN_NAME, self::WP_MIN_VERSION ). '</p></div>';
 		}
 
 		// register settings
