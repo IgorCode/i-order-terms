@@ -1,0 +1,256 @@
+/* global module */
+"use strict";
+
+module.exports = function(grunt) {
+
+	// Timing
+	require('time-grunt')(grunt);
+
+	/**
+	 * Pad number with zero
+	 *
+	 * @param {int} number
+	 * @param {int} pad
+	 * @returns {string}
+	 */
+	function padNumber(number, pad) {
+		return String(new Array(pad).join('0') + (number + '')).slice(-pad);
+	}
+
+	// Project configuration
+	grunt.initConfig({
+		// Metadata
+		pkg: grunt.file.readJSON('package.json'),
+
+		dirs: {
+			plugin : 'src'
+		},
+
+		// Task configurations
+//		clean: {
+//		},
+		phplint: {
+			plugin: [
+				// '!node_modules/**', // Much slower with this exclusion
+				'**/*.php'
+			]
+		},
+		jshint: {
+			options: {
+				node: false
+			},
+			gruntfile: {
+				options: {
+					node: true
+				},
+				src: 'Gruntfile.js'
+			},
+			plugin: {
+				expand: true,
+				cwd: 'js/',
+				src: [
+					'*.js',
+					'!*.min.js'
+				]
+			}
+		},
+		csslint: {
+			options: {
+				'adjoining-classes': false,
+				'box-model': false,
+				'ids': false,
+				'import': 2
+			},
+			plugin: {
+				expand: true,
+				cwd: 'css/',
+				src: [
+					'*.css',
+					'!*.min.css'
+				]
+			}
+		},
+		checktextdomain: {
+			options: {
+				create_report_file: false,
+				keywords: [
+					'__:1,2d',
+					'_e:1,2d',
+					'_x:1,2c,3d',
+					'esc_html__:1,2d',
+					'esc_html_e:1,2d',
+					'esc_html_x:1,2c,3d',
+					'esc_attr__:1,2d',
+					'esc_attr_e:1,2d',
+					'esc_attr_x:1,2c,3d',
+					'_ex:1,2c,3d',
+					'_n:1,2,4d',
+					'_nx:1,2,4c,5d',
+					'_n_noop:1,2,3d',
+					'_nx_noop:1,2,3c,4d'
+				]
+			},
+			plugin: {
+				options: {
+					text_domain: 'i-order-terms'
+				},
+				files: [{
+					expand: true,
+					src: [
+						'**/*.php',
+						'!node_modules/**'
+					]
+				}]
+			}
+		},
+
+		uglify: {
+			local: {
+				expand: true,
+				cwd: 'js/',
+				src: [
+					'*.js',
+					'!*.min.js'
+				],
+				dest: 'js/',
+				ext: '.min.js'
+			}
+		},
+		cssmin: {
+			vendor: {
+				expand: true,
+				cwd: 'css/',
+				src: [
+					'*.css',
+					'!*.min.css'
+				],
+				dest: 'css/',
+				ext: '.min.css'
+			}
+		},
+
+		makepot: {
+			options: {
+				domainPath: 'languages/',
+				potFilename: 'en_US.po',
+				exclude: [
+					'node_modules/.*'
+				],
+				include: [],
+
+				potHeaders: {
+					poedit: true,
+					language: 'en_US',
+					'Report-Msgid-Bugs-To': 'https://wordpress.org/support/plugin/i-order-terms',
+					'po-revision-date': (function() {
+						var now = new Date();
+						return now.getUTCFullYear() + '-' + padNumber(now.getUTCMonth() + 1, 2) + '-' + padNumber(now.getUTCDate(), 2) + ' ' + padNumber(now.getUTCHours(), 2) + ':' + padNumber(now.getUTCMinutes(), 2) + '+0000';
+					}()),
+					'last-translator': 'Igor Jerosimic',
+					'language-team': 'Igor Jerosimic',
+					'x-poedit-keywordslist': true
+				},
+				potComments: '',
+				updateTimestamp: true,
+				updatePoFiles: false,
+				processPot: function( pot ) {
+					var translation,
+						excludedId = [
+							//'LayerSlider',      // LayerSlider translation
+							//'Revolution Slider' // Revolution Slider translation
+						],
+						excludedMeta = [
+							'Theme Name of the plugin/theme',
+							'Author URI of the plugin/theme',
+							'Author of the plugin/theme'
+						];
+
+					for (translation in pot.translations['']) {
+						if (typeof pot.translations[''][translation].msgid !== 'undefined') {
+							if (excludedId.indexOf(pot.translations[''][translation].msgid) >= 0) {
+								// console.log('Excluded meta: ' + pot.translations[''][translation].msgid);
+								delete pot.translations[''][translation];
+
+								continue;
+							}
+						}
+
+						if (typeof pot.translations[''][translation].comments.extracted !== 'undefined') {
+							if (excludedMeta.indexOf(pot.translations[''][translation].comments.extracted) >= 0) {
+								// console.log('Excluded meta: ' + pot.translations[''][ translation ].comments.extracted);
+								delete pot.translations[''][translation];
+							}
+						}
+					}
+
+					return pot;
+				}
+			},
+			plugin: {
+				options: {
+					type: 'wp-plugin',
+					mainFile: 'i-order-terms.php',
+
+					cwd: ''
+				}
+			}
+		},
+		potomo: {
+			options: {
+				poDel: false
+			},
+			plugin: {
+				files: [{
+					expand: true,
+					cwd: 'languages/',
+					src: ['*.po'],
+					dest: 'languages/',
+					ext: '.mo',
+					nonull: true
+				}]
+			}
+		},
+
+
+		watch: {
+			gruntfile: {
+				files: '<%= jshint.gruntfile.src %>',
+				tasks: ['jshint:gruntfile']
+			},
+			css: {
+				files: ['css/*.css'],
+				tasks: ['cssmin:css']
+			},
+			js: {
+				files: ['js/*.js'],
+				tasks: ['jshint:local'],
+				options: {
+					spawn: false
+				}
+			}
+		}
+	});
+
+
+	// These plugins provide necessary tasks
+	grunt.loadNpmTasks('grunt-checktextdomain');
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-csslint');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-phpdocumentor');
+	grunt.loadNpmTasks('grunt-phplint');
+	grunt.loadNpmTasks('grunt-potomo');
+	grunt.loadNpmTasks('grunt-wp-i18n');
+
+
+	// == Tasks ==
+	grunt.registerTask('ctd', ['checktextdomain']);
+
+	grunt.registerTask('default', ['jshint', 'phplint:plugin', 'csslint:plugin', 'ctd:plugin']);
+
+};
