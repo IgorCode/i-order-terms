@@ -22,11 +22,16 @@ class I_Order_Terms
 	const PLUGIN_BASENAME = 'i-order-terms/i-order-terms.php';
 	const PLUGIN_OPTIONS_PAGE = 'iorderterms_general';
 
+	/** @var string Plugin path */
 	private $plugin_path;
+	/** @var string Plugin URL */
 	private $plugin_url;
 
+	/** @var array List of notices for admin users */
 	private $notices = array();
+	/** @var array Taxonomies list */
 	private $taxonomies = array();
+	/** @var array Taxonomies that require custom sorting */
 	private $taxonomies_registered = array();
 
 
@@ -478,9 +483,10 @@ class I_Order_Terms
 	/**
 	 * Save new term order in database.
 	 *
-	 * @param  string $taxonomy     Taxonomy name.
-	 * @param  object $term         Term object.
-	 * @param  int    $custom_order Taxonomy name.
+	 * @param  string   $taxonomy      Taxonomy name.
+	 * @param  object   $term          Term object.
+	 * @param  int      $custom_order  Taxonomy name.
+	 * @param  int|bool $new_parent_id ID of new parent element.
 	 * @return int|bool
 	 */
 	private function reorder_term( $taxonomy, $term, $custom_order, $new_parent_id = false )
