@@ -30,12 +30,21 @@ module.exports = function(grunt) {
 		},
 
 		// Task configurations
-//		clean: {
-//		},
 		phplint: {
 			plugin: [
 				'<%= dirs.plugin %>/**/*.php'
 			]
+		},
+		phpdocumentor: {
+			options: {
+				command: 'run'
+			},
+			all: {
+				options: {
+					directory: '<%= dirs.plugin %>',
+					target: 'docs'
+				}
+			}
 		},
 		jshint: {
 			options: {
@@ -102,6 +111,21 @@ module.exports = function(grunt) {
 						'<%= dirs.plugin %>/**/*.php'
 					]
 				}]
+			}
+		},
+
+
+		clean: {
+			publish: [
+				'<%= dirs.release.plugin %>/**/*'
+			],
+		},
+		copy: {
+			publish: {
+				expand: true,
+				cwd: '<%= dirs.plugin %>/',
+				src: '**/*',
+				dest: '<%= dirs.release.plugin %>/'
 			}
 		},
 
@@ -185,7 +209,7 @@ module.exports = function(grunt) {
 					return pot;
 				}
 			},
-			plugin: {
+			publish: {
 				options: {
 					type: 'wp-plugin',
 					mainFile: 'i-order-terms.php',
@@ -198,7 +222,7 @@ module.exports = function(grunt) {
 			options: {
 				poDel: false
 			},
-			plugin: {
+			publish: {
 				files: [{
 					expand: true,
 					cwd: '<%= dirs.release.plugin %>/languages/',
@@ -223,7 +247,7 @@ module.exports = function(grunt) {
 	// These plugins provide necessary tasks
 	grunt.loadNpmTasks('grunt-checktextdomain');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-compress');
+	// grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-csslint');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
@@ -238,7 +262,21 @@ module.exports = function(grunt) {
 
 	// == Tasks ==
 	grunt.registerTask('ctd', ['checktextdomain']);
+	grunt.registerTask('phpdoc', ['phpdocumentor']);
 
 	grunt.registerTask('default', ['jshint', 'phplint:plugin', 'csslint:plugin', 'ctd:plugin']);
 
+	grunt.registerTask('build:release', [
+		'jshint',
+		'phplint:plugin',
+		'csslint:plugin',
+		'ctd:plugin',
+
+		'clean:publish',
+		'copy:publish',
+		'uglify:publish',
+		'cssmin:publish',
+		'makepot:publish',
+		'potomo:publish',
+	]);
 };
