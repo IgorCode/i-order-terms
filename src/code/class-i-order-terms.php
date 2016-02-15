@@ -72,7 +72,7 @@ class I_Order_Terms
 
 				add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
-				add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+				add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 
 				add_filter( 'plugin_action_links_' . self::PLUGIN_BASENAME, array( $this, 'action_links' ) );
 
@@ -239,7 +239,7 @@ class I_Order_Terms
 
 		// order
 		$order = strtoupper( $args['order'] );
-		if ( !in_array( $order, array('ASC', 'DESC') ) ) {
+		if ( !in_array( $order, array( 'ASC', 'DESC' ) ) ) {
 			$order = 'ASC';
 		}
 		$orderby = "ORDER BY custom_order {$order}";
@@ -409,9 +409,9 @@ class I_Order_Terms
 			$taxonomies_registered = $this->get_taxonomies_registered();
 
 			// fetch all taxonomies with standard WordPress UI that plugin supports
-			$taxonomies = get_taxonomies( array('show_ui' => true), 'objects' );
+			$taxonomies = get_taxonomies( array( 'show_ui' => true ), 'objects' );
 			foreach ( $taxonomies as $taxonomy ) {
-				if ( $taxonomy->_builtin && in_array( $taxonomy->name, array('nav_menu') ) ) {
+				if ( $taxonomy->_builtin && in_array( $taxonomy->name, array( 'nav_menu' ) ) ) {
 					continue;
 				}
 
@@ -452,32 +452,36 @@ class I_Order_Terms
 	} // end admin_menu
 
 	/**
-	 * Loads scripts in admin panel.
+	 * Loads assets in admin panel.
 	 *
 	 * @return void
 	 */
-	public function admin_scripts()
+	public function admin_assets()
 	{
-		// check permissions
+		// Check permissions
 		if ( !current_user_can( 'manage_categories' ) ) return;
 
-		// fetch taxonomy name
+		// Fetch taxonomy name
 		$taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
 
-		// load script only on taxonomy screen and when orderby is not selected
+		// Load assets only on taxonomy screen and when orderby is not selected
 		if ( empty( $_GET['orderby'] ) && !empty( $taxonomy ) && in_array( $taxonomy, $this->taxonomies ) ) {
-			// custom styles
-			wp_register_style( 'iorderterms_custom_order', $this->plugin_url . '/css/admin-i-order-terms.css', false, self::PLUGIN_VERSION );
+
+			// Include minified scripts and styles when script debug mode is off
+			$min_sufix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+
+			// Custom styles
+			wp_register_style( 'iorderterms_custom_order', $this->plugin_url . '/css/admin-i-order-terms' . $min_sufix . '.css', false, self::PLUGIN_VERSION );
 			wp_enqueue_style( 'iorderterms_custom_order' );
 
 			// WP scripts
 			wp_enqueue_script( 'jquery-ui-sortable' );
 
-			// custom scripts
-			wp_register_script( 'iorderterms_custom_order', $this->plugin_url . '/js/admin-i-order-terms.js', array('jquery-ui-sortable'), self::PLUGIN_VERSION );
+			// Custom scripts
+			wp_register_script( 'iorderterms_custom_order', $this->plugin_url . '/js/admin-i-order-terms' . $min_sufix . '.js', array( 'jquery-ui-sortable' ), self::PLUGIN_VERSION );
 			wp_enqueue_script( 'iorderterms_custom_order' );
 		}
-	} // end admin_scripts
+	} // end admin_assets
 
 
 	/**
