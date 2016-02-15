@@ -7,6 +7,7 @@
 
 // inspired by Simple Page Ordering plugin ( http://wordpress.org/extend/plugins/simple-page-ordering/ )
 jQuery(document).ready(function($) {
+	"use strict";
 
 	var $sort = $('table.wp-list-table > tbody');
 	$sort.sortable({
