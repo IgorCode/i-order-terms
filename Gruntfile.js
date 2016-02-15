@@ -23,7 +23,10 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 
 		dirs: {
-			plugin : 'src'
+			plugin : 'src',
+			release: {
+				plugin: 'release/trunk'
+			}
 		},
 
 		// Task configurations
@@ -31,8 +34,7 @@ module.exports = function(grunt) {
 //		},
 		phplint: {
 			plugin: [
-				// '!node_modules/**', // Much slower with this exclusion
-				'**/*.php'
+				'<%= dirs.plugin %>/**/*.php'
 			]
 		},
 		jshint: {
@@ -47,7 +49,7 @@ module.exports = function(grunt) {
 			},
 			plugin: {
 				expand: true,
-				cwd: 'js/',
+				cwd: '<%= dirs.plugin %>/js/',
 				src: [
 					'*.js',
 					'!*.min.js'
@@ -63,7 +65,7 @@ module.exports = function(grunt) {
 			},
 			plugin: {
 				expand: true,
-				cwd: 'css/',
+				cwd: '<%= dirs.plugin %>/css/',
 				src: [
 					'*.css',
 					'!*.min.css'
@@ -97,34 +99,33 @@ module.exports = function(grunt) {
 				files: [{
 					expand: true,
 					src: [
-						'**/*.php',
-						'!node_modules/**'
+						'<%= dirs.plugin %>/**/*.php'
 					]
 				}]
 			}
 		},
 
 		uglify: {
-			local: {
+			publish: {
 				expand: true,
-				cwd: 'js/',
+				cwd: '<%= dirs.plugin %>/js/',
 				src: [
 					'*.js',
 					'!*.min.js'
 				],
-				dest: 'js/',
+				dest: '<%= dirs.release.plugin %>/js/',
 				ext: '.min.js'
 			}
 		},
 		cssmin: {
-			vendor: {
+			publish: {
 				expand: true,
-				cwd: 'css/',
+				cwd: '<%= dirs.plugin %>/css/',
 				src: [
 					'*.css',
 					'!*.min.css'
 				],
-				dest: 'css/',
+				dest: '<%= dirs.release.plugin %>/css/',
 				ext: '.min.css'
 			}
 		},
@@ -133,9 +134,7 @@ module.exports = function(grunt) {
 			options: {
 				domainPath: 'languages/',
 				potFilename: 'en_US.po',
-				exclude: [
-					'node_modules/.*'
-				],
+				exclude: [],
 				include: [],
 
 				potHeaders: {
@@ -191,7 +190,7 @@ module.exports = function(grunt) {
 					type: 'wp-plugin',
 					mainFile: 'i-order-terms.php',
 
-					cwd: ''
+					cwd: '<%= dirs.release.plugin %>'
 				}
 			}
 		},
@@ -202,9 +201,9 @@ module.exports = function(grunt) {
 			plugin: {
 				files: [{
 					expand: true,
-					cwd: 'languages/',
+					cwd: '<%= dirs.release.plugin %>/languages/',
 					src: ['*.po'],
-					dest: 'languages/',
+					dest: '<%= dirs.release.plugin %>/languages/',
 					ext: '.mo',
 					nonull: true
 				}]
@@ -216,17 +215,6 @@ module.exports = function(grunt) {
 			gruntfile: {
 				files: '<%= jshint.gruntfile.src %>',
 				tasks: ['jshint:gruntfile']
-			},
-			css: {
-				files: ['css/*.css'],
-				tasks: ['cssmin:css']
-			},
-			js: {
-				files: ['js/*.js'],
-				tasks: ['jshint:local'],
-				options: {
-					spawn: false
-				}
 			}
 		}
 	});
