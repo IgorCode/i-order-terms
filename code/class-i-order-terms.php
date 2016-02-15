@@ -6,15 +6,13 @@
 
 // Don't allow direct access
 if ( !defined( 'ABSPATH' ) ) {
-	die ( "Hello! I freelance as a plugin, you can't call me directly. :/" );
+	die( "Hello! I freelance as a plugin, you can't call me directly. :/" );
 }
 
 
 if ( !class_exists( 'I_Order_Terms' ) ) {
 /**
  * I Order Terms plugin main class.
- *
- * @since 1.0.0
  */
 class I_Order_Terms
 {
@@ -45,13 +43,13 @@ class I_Order_Terms
 		$this->plugin_url = $plugin_url;
 
 
-		add_action( 'after_setup_theme', array($this, 'after_setup_theme') );
+		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 
-		add_filter( 'terms_clauses', array($this, 'terms_clauses'), 10, 3 );
+		add_filter( 'terms_clauses', array( $this, 'terms_clauses' ), 10, 3 );
 
-		add_action( 'registered_taxonomy', array($this, 'registered_taxonomy'), 10, 3 );
+		add_action( 'registered_taxonomy', array( $this, 'registered_taxonomy' ), 10, 3 );
 
-		add_action( 'wpmu_new_blog', array($this, 'wpmu_new_blog'), 10, 6 );
+		add_action( 'wpmu_new_blog', array( $this, 'wpmu_new_blog' ), 10, 6 );
 
 
 		if ( is_admin() ) {
@@ -59,19 +57,19 @@ class I_Order_Terms
 			if ( defined( 'DOING_AJAX' ) ) {
 				// ajax
 
-				add_action( 'wp_ajax_i-order-terms', array($this, 'ajax_order_terms') );
+				add_action( 'wp_ajax_i-order-terms', array( $this, 'ajax_order_terms' ) );
 			} else {
 				// no ajax
 
-				add_action( 'admin_init', array($this, 'admin_init') );
+				add_action( 'admin_init', array( $this, 'admin_init' ) );
 
-				add_action( 'admin_notices', array($this, 'admin_notices') );
+				add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
-				add_action( 'admin_menu', array($this, 'admin_menu') );
+				add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
-				add_action( 'admin_enqueue_scripts', array($this, 'admin_scripts') );
+				add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 
-				add_filter( 'plugin_action_links_' . self::PLUGIN_BASENAME, array($this, 'action_links') );
+				add_filter( 'plugin_action_links_' . self::PLUGIN_BASENAME, array( $this, 'action_links' ) );
 
 
 				// update option name because of WP sanitation bug
@@ -445,7 +443,7 @@ class I_Order_Terms
 	 */
 	public function admin_menu()
 	{
-		add_options_page( sprintf( __( 'Settings &lsaquo; %s', 'i-order-terms' ), self::PLUGIN_NAME ), self::PLUGIN_NAME, 'manage_options', 'i-order-terms-options', array($this, 'settings_general_print') );
+		add_options_page( sprintf( __( 'Settings &lsaquo; %s', 'i-order-terms' ), self::PLUGIN_NAME ), self::PLUGIN_NAME, 'manage_options', 'i-order-terms-options', array( $this, 'settings_general_print' ) );
 	} // end admin_menu
 
 	/**
@@ -499,7 +497,7 @@ class I_Order_Terms
 			$data['parent'] = $new_parent_id;
 		}
 
-		$ret = $wpdb->update( $wpdb->term_taxonomy, $data, array('term_taxonomy_id' => $term->term_taxonomy_id) );
+		$ret = $wpdb->update( $wpdb->term_taxonomy, $data, array( 'term_taxonomy_id' => $term->term_taxonomy_id ) );
 		clean_term_cache( $term->term_id, $taxonomy );
 
 		return $ret;

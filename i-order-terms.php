@@ -33,15 +33,15 @@
 
 // Don't allow direct access
 if ( !defined( 'ABSPATH' ) ) {
-	die ( "Hello! I freelance as a plugin, you can't call me directly. :/" );
+	die( "Hello! I freelance as a plugin, you can't call me directly. :/" );
 }
 
 
-// load plugin
-// NOTE: plugins_url( '', __FILE__ ) not working properly with symlink folder
 require dirname( __FILE__ ) . '/code/class-i-order-terms.php';
-$GLOBALS['i_order_terms'] = new I_Order_Terms( dirname( __FILE__ ), plugins_url( '', 'i-order-terms/i-order-terms.php' ) );
 
 
 // Plugin activation (NOTE: must be hooked inside main file)
 register_activation_hook( __FILE__, array( 'I_Order_Terms', 'activate' ) );
+
+// Init plugin
+$GLOBALS['i_order_terms'] = new I_Order_Terms( dirname( __FILE__ ), plugins_url( '', __FILE__ ) );
