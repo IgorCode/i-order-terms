@@ -6,17 +6,6 @@ module.exports = function(grunt) {
 	// Timing
 	require('time-grunt')(grunt);
 
-	/**
-	 * Pad number with zero
-	 *
-	 * @param {int} number
-	 * @param {int} pad
-	 * @returns {string}
-	 */
-	function padNumber(number, pad) {
-		return String(new Array(pad).join('0') + (number + '')).slice(-pad);
-	}
-
 	// Project configuration
 	grunt.initConfig({
 		// Metadata
@@ -118,7 +107,7 @@ module.exports = function(grunt) {
 		clean: {
 			publish: [
 				'<%= dirs.release.plugin %>/**/*'
-			],
+			]
 		},
 		copy: {
 			publish: {
@@ -157,7 +146,7 @@ module.exports = function(grunt) {
 		makepot: {
 			options: {
 				domainPath: 'languages/',
-				potFilename: 'en_US.po',
+				// potFilename: '',
 				exclude: [],
 				include: [],
 
@@ -166,8 +155,7 @@ module.exports = function(grunt) {
 					language: 'en_US',
 					'Report-Msgid-Bugs-To': 'https://wordpress.org/support/plugin/i-order-terms',
 					'po-revision-date': (function() {
-						var now = new Date();
-						return now.getUTCFullYear() + '-' + padNumber(now.getUTCMonth() + 1, 2) + '-' + padNumber(now.getUTCDate(), 2) + ' ' + padNumber(now.getUTCHours(), 2) + ':' + padNumber(now.getUTCMinutes(), 2) + '+0000';
+						return grunt.template.today('UTC:yyyy-mm-dd H:MM+0000');
 					}()),
 					'last-translator': 'Igor Jerosimic',
 					'language-team': 'Igor Jerosimic',
@@ -178,10 +166,7 @@ module.exports = function(grunt) {
 				updatePoFiles: false,
 				processPot: function( pot ) {
 					var translation,
-						excludedId = [
-							//'LayerSlider',      // LayerSlider translation
-							//'Revolution Slider' // Revolution Slider translation
-						],
+						excludedId = [],
 						excludedMeta = [
 							'Theme Name of the plugin/theme',
 							'Author URI of the plugin/theme',
@@ -218,21 +203,6 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		potomo: {
-			options: {
-				poDel: false
-			},
-			publish: {
-				files: [{
-					expand: true,
-					cwd: '<%= dirs.release.plugin %>/languages/',
-					src: ['*.po'],
-					dest: '<%= dirs.release.plugin %>/languages/',
-					ext: '.mo',
-					nonull: true
-				}]
-			}
-		},
 
 
 		watch: {
@@ -256,7 +226,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-phpdocumentor');
 	grunt.loadNpmTasks('grunt-phplint');
-	grunt.loadNpmTasks('grunt-potomo');
 	grunt.loadNpmTasks('grunt-wp-i18n');
 
 
@@ -276,7 +245,6 @@ module.exports = function(grunt) {
 		'copy:publish',
 		'uglify:publish',
 		'cssmin:publish',
-		'makepot:publish',
-		'potomo:publish',
+		'makepot:publish'
 	]);
 };
