@@ -3,7 +3,7 @@ Contributors: x64igor
 Tags: sort, order, terms, taxonomy
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,8 @@ Please make sure to include plugin version when reporting bugs.
 2. Settings section where you can select which taxonomy should be sortable.
 
 == Changelog ==
+= 1.5.0 =
+* Added check/uncheck all checkbox in options
 = 1.4.0 =
 * Minified css and js assets
 * Fixed text domain usage
@@ -98,6 +100,8 @@ Please make sure to include plugin version when reporting bugs.
 * Initial release
 
 == Upgrade Notice ==
+= 1.5.0 =
+* Added check/uncheck all checkbox in options
 = 1.4.0 =
 * Minified assets and fixed text domain usage
 = 1.3.1 =

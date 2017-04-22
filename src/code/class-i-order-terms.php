@@ -410,6 +410,31 @@ class I_Order_Terms
 
 			// fetch all taxonomies with standard WordPress UI that plugin supports
 			$taxonomies = get_taxonomies( array( 'show_ui' => true ), 'objects' );
+
+
+			// Show check/uncheck all
+			if ( count( $taxonomies ) > 1 ) {
+				?>
+
+				<label for="iorderterms-ctrl-all">
+					<input id="iorderterms-ctrl-all" type="checkbox" onclick="iOrderTermsToggle(this)" />
+					<span><?php echo esc_html_e( 'Check/uncheck all', 'i-order-terms' ); ?></span>
+					<hr />
+				</label>
+				<br />
+				<script>
+				function iOrderTermsToggle(source) {
+					var checkboxes = document.getElementsByName('iorderterms_general[taxonomies-sort][]');
+					for ( var i = 0; i < checkboxes.length; i++) {
+						checkboxes[i].checked = source.checked;
+					}
+				}
+				</script>
+
+				<?php
+			}
+
+			// List taxonomies
 			foreach ( $taxonomies as $taxonomy ) {
 				if ( $taxonomy->_builtin && in_array( $taxonomy->name, array( 'nav_menu' ) ) ) {
 					continue;
