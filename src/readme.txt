@@ -1,9 +1,9 @@
 === I Order Terms ===
 Contributors: x64igor
 Tags: sort, order, terms, taxonomy
-Requires PHP: 5.4
+Requires PHP: 5.6
 Requires at least: 3.5
-Tested up to: 5.2
+Tested up to: 6.4
 Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -32,7 +32,7 @@ Plugin ads new column to 'term_taxonomy' table, make sure to backup your databas
 
 
 == Installation ==
-1. You can download and install "I Order Terms" plugin by using the built in WordPress plugin installer. Or you can upload plugin folder "i-order-terms" manually to your "/wp-content/plugins/" directory.
+1. You can download and install "I Order Terms" plugin by using the built-in WordPress plugin installer. Or you can upload plugin folder "i-order-terms" manually to your "/wp-content/plugins/" directory.
 2. Activate the plugin through the "Plugins" menu in WordPress.
 3. You will need to enable plugin for taxonomy that you wish to sort.
 
@@ -71,7 +71,7 @@ Yes, it will work on multisite installation.
 User needs to have "manage_categories" permission to be able to order terms.
 
 = Where can I report a bug? =
-You can report bugs from contact form on my website at <a href="http://www.igorware.com/contact?referrer-ver=I-Order-Terms">http://www.igorware.com/contact</a>.
+You can report bugs from contact form on my website at <a href="https://www.igorware.com/contact?referrer-ver=I-Order-Terms">https://www.igorware.com/contact</a>.
 Please make sure to include plugin version when reporting bugs.
 
 == Screenshots ==

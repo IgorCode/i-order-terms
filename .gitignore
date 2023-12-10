@@ -1,5 +1,6 @@
 /.git/
 /.docker/
+/.idea/
 /nbproject/
 /node_modules/
 /docs/
