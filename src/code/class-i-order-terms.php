@@ -17,7 +17,7 @@ if ( !class_exists( 'I_Order_Terms' ) ) {
 class I_Order_Terms
 {
 	const PLUGIN_NAME = 'I Order Terms';
-	const PLUGIN_VERSION = '1.4.0';
+	const PLUGIN_VERSION = '1.5.0';
 	const WP_MIN_VERSION = '3.5';
 	const PLUGIN_BASENAME = 'i-order-terms/i-order-terms.php';
 	const PLUGIN_OPTIONS_PAGE = 'iorderterms_general';

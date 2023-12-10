@@ -146,7 +146,7 @@ module.exports = function(grunt) {
 		makepot: {
 			options: {
 				domainPath: 'languages/',
-				// potFilename: '',
+				potFilename: 'i-order-terms.pot',
 				exclude: [],
 				include: [],
 
