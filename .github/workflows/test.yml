@@ -14,13 +14,10 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v3
 
-            - name: Validate composer.json and composer.lock
-              run: composer validate --strict
-
             - name: Install PHP 8.4
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.4'
+                  php-version: "8.4"
                   ini-values: date.timezone='UTC'
                   extensions: posix, dom, curl, libxml, mbstring, zip, pcntl, pdo, pgsql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv, imagick
                   coverage: pcov
@@ -28,6 +25,9 @@ jobs:
 
             - name: Add PHP symlink for php84
               run: sudo ln -s /usr/bin/php /usr/bin/php84
+
+            - name: Validate composer.json and composer.lock
+              run: composer validate --strict
 
             - name: Run PHP Lint
               uses: overtrue/phplint@9.5.6
