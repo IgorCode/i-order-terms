@@ -39,15 +39,15 @@
 		],
 		"dev-init": [
 			"# <info>Composer update</info>",
-			"php composer update"
+			"composer update"
 		],
 		"prod-init": [
 			"# <info>Composer install</info>",
-			"php composer install --prefer-dist --no-dev --no-scripts --optimize-autoloader"
+			"composer install --prefer-dist --no-dev --no-scripts --optimize-autoloader"
 		],
 		"test-init": [
 			"# <info>Composer install</info>",
-			"php composer install --no-progress --optimize-autoloader --prefer-dist"
+			"composer install --no-progress --optimize-autoloader --prefer-dist"
 		]
 	},
 	"scripts-descriptions": {
