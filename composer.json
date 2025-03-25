@@ -3,7 +3,7 @@
 	"description": "I Order Terms - WordPress plugin",
 	"homepage": "https://github.com/IgorCode/i-order-terms",
 	"type": "project",
-	"license": "GPL-2.0",
+	"license": "GPL-2.0-only",
 	"authors": [
 		{
 			"name": "Igor Jerosimić",
