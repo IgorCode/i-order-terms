@@ -1,0 +1,49 @@
+name: Tests
+
+on:
+    pull_request:
+        branches: [main]
+    push:
+        branches: [main]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Install PHP 8.4
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.4"
+                  ini-values: date.timezone='UTC'
+                  extensions: posix, dom, curl, libxml, mbstring, zip, pcntl, pdo, pgsql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv, imagick
+                  coverage: pcov
+                  tools: composer:v2
+
+            - name: Add PHP symlink for php84
+              run: sudo ln -s /usr/bin/php /usr/bin/php84
+
+            - name: Validate composer.json and composer.lock
+              run: composer validate --strict
+
+            - name: Run PHP Lint
+              uses: overtrue/phplint@9.5.6
+              with:
+                  path: ./src
+
+#            - name: Cache Composer packages
+#              uses: actions/cache@v3
+#              with:
+#                  path: vendor
+#                  key: ${{ runner.os }}-php-${{ hashFiles('composer.lock') }}
+#                  restore-keys: |
+#                      ${{ runner.os }}-php-
+
+            - name: Install dependencies
+              run: composer test-init
+
+#            - name: Static analysis
+#              run: composer qa

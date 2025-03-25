@@ -1,0 +1,13 @@
+parameters:
+	level: 8
+	tipsOfTheDay: false
+
+#	bootstrapFiles:
+#		- src/i-order-terms.php
+	parallel:
+		buffer: 5073741824  # 5GB
+		processTimeout: 300.00
+	phpVersion: 80400
+
+	paths:
+		- src

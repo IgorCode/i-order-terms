@@ -19,11 +19,6 @@ module.exports = function(grunt) {
 		},
 
 		// Task configurations
-		phplint: {
-			plugin: [
-				'<%= dirs.plugin %>/**/*.php'
-			]
-		},
 		// phpdocumentor: {
 		// 	options: {
 		// 		command: 'run'
@@ -225,7 +220,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	// grunt.loadNpmTasks('grunt-phpdocumentor');
-	grunt.loadNpmTasks('grunt-phplint');
 	grunt.loadNpmTasks('grunt-wp-i18n');
 	// TODO: Check out plugin-grunt-tasks ( https://github.com/Yoast/plugin-grunt-tasks )
 
@@ -234,11 +228,10 @@ module.exports = function(grunt) {
 	grunt.registerTask('ctd', ['checktextdomain']);
 	// grunt.registerTask('phpdoc', ['phpdocumentor']);
 
-	grunt.registerTask('default', ['jshint', 'phplint:plugin', 'csslint:plugin', 'ctd:plugin']);
+	grunt.registerTask('default', ['jshint', 'csslint:plugin', 'ctd:plugin']);
 
 	grunt.registerTask('build:release', [
 		'jshint',
-		'phplint:plugin',
 		'csslint:plugin',
 		'ctd:plugin',
 
