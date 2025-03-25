@@ -1,0 +1,60 @@
+{
+	"name": "igorcode/i-order-terms",
+	"description": "I Order Terms - WordPress plugin",
+	"homepage": "https://github.com/IgorCode/i-order-terms",
+	"type": "project",
+	"license": "GPL-2.0",
+	"authors": [
+		{
+			"name": "Igor Jerosimić",
+			"homepage": "https://igor.jerosimic.net",
+			"role": "Developer"
+		}
+	],
+
+	"minimum-stability": "stable",
+	"require": {
+		"php": ">=7.0.0"
+	},
+	"require-dev": {
+		"phpstan/phpstan": "^2.1"
+	},
+	"config": {
+		"process-timeout": 600
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org"
+		}
+	],
+
+	"scripts": {
+		"qa-phpstan": [
+			"./vendor/bin/phpstan analyse --configuration phpstan.neon"
+		],
+		"qa": [
+			"# <info>PHPStan Lint</info>",
+			"@qa-phpstan"
+		],
+		"dev-init": [
+			"# <info>Composer update</info>",
+			"php84 ~/bin/composer update"
+		],
+		"prod-init": [
+			"# <info>Composer install</info>",
+			"php84 ~/bin/composer install --prefer-dist --no-dev --no-scripts --optimize-autoloader"
+		],
+		"test-init": [
+			"# <info>Composer install</info>",
+			"php84 ~/bin/composer install --no-progress --optimize-autoloader --prefer-dist"
+		]
+	},
+	"scripts-descriptions": {
+		"qa": "Run QA on code.",
+		"qa-phpstan": "Run static analyses with phpstan.",
+		"dev-init": "Init dev environment.",
+		"prod-init": "Init prod environment.",
+		"test-init": "Init test environment."
+	}
+}
