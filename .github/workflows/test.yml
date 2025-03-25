@@ -32,18 +32,16 @@ jobs:
             - name: Run PHP Lint
               uses: overtrue/phplint@9.5.6
 
-#            - name: Cache Composer packages
-#              uses: actions/cache@v3
-#              with:
-#                  path: vendor
-#                  key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-#                  restore-keys: |
-#                      ${{ runner.os }}-php-
-#
-#            - name: Install dependencies
-#              working-directory: ./src
-#              run: composer test-init
-#
+            - name: Cache Composer packages
+              uses: actions/cache@v3
+              with:
+                  path: vendor
+                  key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-php-
+
+            - name: Install dependencies
+              run: composer test-init
+
 #            - name: Static analysis
-#              working-directory: ./src
 #              run: composer qa
