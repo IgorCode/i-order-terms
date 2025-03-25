@@ -1,0 +1,27 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: saturday
+      time: '06:00'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: saturday
+      time: '06:00'
+    groups:
+      npm:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
