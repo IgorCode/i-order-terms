@@ -24,17 +24,17 @@ module.exports = function(grunt) {
 				'<%= dirs.plugin %>/**/*.php'
 			]
 		},
-		phpdocumentor: {
-			options: {
-				command: 'run'
-			},
-			all: {
-				options: {
-					directory: '<%= dirs.plugin %>',
-					target: 'docs'
-				}
-			}
-		},
+		// phpdocumentor: {
+		// 	options: {
+		// 		command: 'run'
+		// 	},
+		// 	all: {
+		// 		options: {
+		// 			directory: '<%= dirs.plugin %>',
+		// 			target: 'docs'
+		// 		}
+		// 	}
+		// },
 		jshint: {
 			options: {
 				node: false
@@ -224,14 +224,15 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-phpdocumentor');
+	// grunt.loadNpmTasks('grunt-phpdocumentor');
 	grunt.loadNpmTasks('grunt-phplint');
 	grunt.loadNpmTasks('grunt-wp-i18n');
+	// TODO: Check out plugin-grunt-tasks ( https://github.com/Yoast/plugin-grunt-tasks )
 
 
 	// == Tasks ==
 	grunt.registerTask('ctd', ['checktextdomain']);
-	grunt.registerTask('phpdoc', ['phpdocumentor']);
+	// grunt.registerTask('phpdoc', ['phpdocumentor']);
 
 	grunt.registerTask('default', ['jshint', 'phplint:plugin', 'csslint:plugin', 'ctd:plugin']);
 
