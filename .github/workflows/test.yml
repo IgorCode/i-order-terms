@@ -30,7 +30,7 @@ jobs:
               run: composer validate --strict
 
             - name: Run PHP Lint
-              uses: overtrue/phplint@9.6
+              uses: overtrue/phplint@10.0
               with:
                   path: ./src
 
