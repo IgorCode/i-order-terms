@@ -6,8 +6,30 @@
  */
 
 // inspired by Simple Page Ordering plugin ( https://wordpress.org/plugins/simple-page-ordering/ )
-jQuery(document).ready(function($) {
+jQuery(document).ready(function($)
+{
 	"use strict";
+
+	function get_term_id(el)
+	{
+		var ret;
+
+		if (el.length) {
+			ret = parseInt(el.find('.check-column input').val(), 10);
+
+			if (!ret) {
+				// try to find term ID by other means
+				ret = parseInt(el.attr('id').replace('tag-', ''), 10);
+			}
+
+			if (!$.isNumeric(ret)) {
+				$sort.sortable('cancel');
+				return;
+			}
+		}
+
+		return ret;
+	}
 
 	var $sort = $('table.wp-list-table > tbody');
 	$sort.sortable({
@@ -22,27 +44,6 @@ jQuery(document).ready(function($) {
 		opacity: 0.8,
 		scrollSensitivity: 40,
 		update: function(event, ui) {
-			function get_term_id(el) {
-				var ret;
-
-				if (el.length) {
-					ret = parseInt(el.find('.check-column input').val(), 10);
-
-					if (!ret) {
-						// try to find term ID by other means
-						ret = parseInt(el.attr('id').replace('tag-', ''), 10);
-					}
-
-					if (!$.isNumeric(ret)) {
-						$sort.sortable('cancel');
-						return;
-					}
-				}
-
-				return ret;
-			}
-
-
 			// get taxonomy name
 			var $taxonomy = $('input[name="taxonomy"]');
 			if (!$taxonomy.length) {
@@ -114,19 +115,26 @@ jQuery(document).ready(function($) {
 				taxonomy: taxonomy,
 				force_reload: force_reload
 			};
-			$.post(ajaxurl, data, function(data) {
-				if (data.status === 'ok') {
-					if (data.force_reload) {
+			$.post(ajaxurl, data, function(response) {
+				var $ajaxResponse = $('#ajax-response');
+				$ajaxResponse.empty();
+
+				if (response.status === 'ok') {
+					if (response.force_reload) {
 						window.location.reload();
 						return;
-					} else {
-						$('#ajax-response').empty();
 					}
 				} else {
-					$('#ajax-response').empty().append('<div class="error"><p>' + data.message + '</p></div>');
+					var p = document.createElement('p');
+					p.textContent = response.message;
+					var errorDiv = document.createElement('div');
+					errorDiv.className = 'error';
+					errorDiv.appendChild(p);
+
+					$ajaxResponse.append(errorDiv);
 					$sort.sortable('cancel');
 
-					console.error(data.message);
+					console.error(response.message);
 				}
 
 				// remove spinner
