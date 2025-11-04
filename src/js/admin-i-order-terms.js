@@ -1,4 +1,4 @@
-/* global jQuery:true, ajaxurl:true */
+/* global jQuery:true, ajaxurl:true, iOrderTerms:true */
 
 /**
  * @package IOrderTerms
@@ -107,6 +107,7 @@ jQuery(document).ready(function($) {
 			// send sort cmd via ajax
 			var data = {
 				action: 'i-order-terms',
+				nonce: (iOrderTerms && iOrderTerms.nonce) ? iOrderTerms.nonce : '',
 				term_id: term_id,
 				term_prev_id: prev_term_id,
 				term_next_id: next_term_id,

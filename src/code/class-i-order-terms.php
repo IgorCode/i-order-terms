@@ -505,6 +505,11 @@ class I_Order_Terms
 			// Custom scripts
 			wp_register_script( 'iorderterms_custom_order', $this->plugin_url . '/js/admin-i-order-terms' . $min_suffix . '.js', array( 'jquery-ui-sortable' ), self::PLUGIN_VERSION );
 			wp_enqueue_script( 'iorderterms_custom_order' );
+
+			// Localization + custom data
+			wp_localize_script( 'iorderterms_custom_order', 'iOrderTerms', [
+				'nonce' => wp_create_nonce( 'i-order-terms' ),
+			] );
 		}
 	} // end admin_assets
 
@@ -572,6 +577,10 @@ class I_Order_Terms
 			exit( $this->ajax_response( 'error', __( 'User does not have permission to perform this action.', 'i-order-terms' ) ) );
 		}
 
+		// Verify nonce for CSRF protection
+		if ( !check_ajax_referer( 'i-order-terms', 'nonce', false ) ) {
+			exit( $this->ajax_response( 'error', __( 'Security check failed. Please reload the page and try again.', 'i-order-terms' ) ) );
+		}
 
 		$taxonomy = filter_input( INPUT_POST, 'taxonomy', FILTER_SANITIZE_STRING );
 		$term_id = filter_input( INPUT_POST, 'term_id', FILTER_SANITIZE_NUMBER_INT );
