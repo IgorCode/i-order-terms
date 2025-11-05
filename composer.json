@@ -17,10 +17,15 @@
 		"php": ">=7.0.0"
 	},
 	"require-dev": {
-		"phpstan/phpstan": "^2.1"
+		"phpstan/phpstan": "^2.1",
+		"phpstan/extension-installer": "^1.4",
+		"szepeviktor/phpstan-wordpress": "^2.0"
 	},
 	"config": {
-		"process-timeout": 600
+		"process-timeout": 600,
+		"allow-plugins": {
+			"phpstan/extension-installer": true
+		}
 	},
 	"repositories": [
 		{

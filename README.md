@@ -21,5 +21,5 @@ Yes, it will work on multisite installation.
 User needs to have "manage_categories" permission to be able to order terms.
 
 **Where can I report a bug?**
-You can report bugs from contact form on my website at [www.igorware.com/contact](https://www.igorware.com/contact?referrer-ver=I-Order-Terms).
+You can report bugs from the contact form on my website at [www.igorware.com/contact](https://www.igorware.com/contact?referrer-ver=I-Order-Terms).
 Please make sure to include plugin version when reporting bugs.

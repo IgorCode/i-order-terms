@@ -19,7 +19,7 @@ Plugin supports multisite installation.
 The minimum requirement is that you have at least WordPress 3.5 installed.
 
 = Example usage =
-**Fetching sorted terms from custom taxonomy will be enabled by default:**
+**Fetching sorted terms from a custom taxonomy will be enabled by default:**
 
 `$terms = get_terms( 'your-taxonomy-name' );`
 
@@ -28,7 +28,7 @@ The minimum requirement is that you have at least WordPress 3.5 installed.
 `$terms = get_terms( 'your-taxonomy-name', 'i_order_terms=0' );`
 
 = Warning =
-Plugin ads new column to 'term_taxonomy' table, make sure to backup your database before installing. Column is removed when you delete plugin.
+Plugin adds a new column to the 'term_taxonomy' table, make sure to backup your database before installing. Column is removed when you delete the plugin.
 
 
 == Installation ==
@@ -37,7 +37,7 @@ Plugin ads new column to 'term_taxonomy' table, make sure to backup your databas
 3. You will need to enable plugin for taxonomy that you wish to sort.
 
 = Enabling plugin for taxonomy =
-You can use settings page or add code in your function file. There are two options you can use to make taxonomy sortable:
+You can use the settings page or add code in your function file. There are two options you can use to make taxonomy sortable:
 
 1) You can enable sorting when registering taxonomy:
 `
@@ -50,7 +50,7 @@ register_taxonomy( 'your-taxonomy-name', 'your-post-type', array(
 ));
 `
 
-2) Other option is to pass array of taxonomies (or tags/categories) via filter "i_order_terms_taxonomies" in your functions file like this:
+2) Other option is to pass an array of taxonomies (or tags/categories) via filter "i_order_terms_taxonomies" in your functions file like this:
 `
 function custom_i_order_terms_taxonomies($taxonomies) {
 	$taxonomies = array_merge($taxonomies, array('taxonomy', 'category'));
@@ -60,7 +60,7 @@ add_filter('i_order_terms_taxonomies', 'custom_i_order_terms_taxonomies');
 `
 
 This will enable taxonomy sorting for 'taxonomy' and 'category' taxonomies.
-Naturally you will have to provide your taxonomy names.
+Naturally, you will have to provide your taxonomy names.
 
 == Frequently Asked Questions ==
 
@@ -71,7 +71,7 @@ Yes, it will work on multisite installation.
 User needs to have "manage_categories" permission to be able to order terms.
 
 = Where can I report a bug? =
-You can report bugs from contact form on my website at <a href="https://www.igorware.com/contact?referrer-ver=I-Order-Terms">https://www.igorware.com/contact</a>.
+You can report bugs from the contact form on my website at <a href="https://www.igorware.com/contact?referrer-ver=I-Order-Terms">https://www.igorware.com/contact</a>.
 Please make sure to include plugin version when reporting bugs.
 
 == Screenshots ==
@@ -82,7 +82,7 @@ Please make sure to include plugin version when reporting bugs.
 = 1.5.0 =
 * Added check/uncheck all checkbox in options
 = 1.4.0 =
-* Minified css and js assets
+* Minified CSS and JS assets
 * Fixed text domain usage
 = 1.3.1 =
 * Shows taxonomy name next to taxonomy label in plugin settings. This should avoid confusion when there are several taxonomies with same label
@@ -91,7 +91,7 @@ Please make sure to include plugin version when reporting bugs.
 * Improved security by preventing directory browsing
 * Removed screenshots from plugin folder, this should save you some bandwidth :)
 = 1.2.0 =
-* Added link to settings on plugins page
+* Added a link to settings on plugin page
 * Settings page completely rewritten to use WordPress Settings API
 * Drag & drop can now be done in different levels i.e. you can now change parent of dragged item
 = 1.1.0 =

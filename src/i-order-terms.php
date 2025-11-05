@@ -42,7 +42,7 @@ if ( !defined( 'ABSPATH' ) ) {
 require dirname( __FILE__ ) . '/code/class-i-order-terms.php';
 
 
-// Plugin activation (NOTE: must be hooked inside main file)
+// Plugin activation (NOTE: must be hooked inside the main file)
 register_activation_hook( __FILE__, array( 'I_Order_Terms', 'activate' ) );
 
 // Init plugin
