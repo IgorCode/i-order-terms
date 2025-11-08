@@ -27,7 +27,7 @@ jobs:
           MAIN_FILE="src/i-order-terms.php"
           PLUGIN_VERSION=$(grep -Po "^\s*\*\s*Version:\s*\K[^\s]+" "$MAIN_FILE" | head -n1)
           echo "Plugin version: $PLUGIN_VERSION"
-          echo "version=$PLUGIN_VERSION" >> $GITHUB_ENV
+          echo "version=$PLUGIN_VERSION" >> $GITHUB_OUTPUT
 
       - name: Check plugin versions match
         shell: bash
