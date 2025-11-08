@@ -1,49 +1,97 @@
 name: Tests
 
 on:
-    pull_request:
-        branches: [main]
-    push:
-        branches: [main]
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
+  version_check:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
 
-            - name: Install PHP 8.4
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: "8.4"
-                  ini-values: date.timezone='UTC'
-                  extensions: posix, dom, curl, libxml, mbstring, zip, pcntl, pdo, pgsql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv, imagick
-                  coverage: pcov
-                  tools: composer:v2
+      - name: Read plugin version
+        id: current_version
+        shell: bash
+        run: |
+          set -euo pipefail
 
-            - name: Add PHP symlink for php84
-              run: sudo ln -s /usr/bin/php /usr/bin/php84
+          MAIN_FILE="src/i-order-terms.php"
+          PLUGIN_VERSION=$(grep -Po "^\s*\*\s*Version:\s*\K[^\s]+" "$MAIN_FILE" | head -n1)
+          echo "Plugin version: $PLUGIN_VERSION"
+          echo "version=$PLUGIN_VERSION" >> $GITHUB_OUTPUT
 
-            - name: Validate composer.json and composer.lock
-              run: composer validate --strict
+      - name: Check plugin versions match
+        shell: bash
+        run: |
+          set -euo pipefail
 
-            - name: Run PHP Lint
-              uses: overtrue/phplint@10.0
-              with:
-                  path: ./src
+          VERSION="${{ steps.current_version.outputs.version }}"
 
-#            - name: Cache Composer packages
-#              uses: actions/cache@v3
-#              with:
-#                  path: vendor
-#                  key: ${{ runner.os }}-php-${{ hashFiles('composer.lock') }}
-#                  restore-keys: |
-#                      ${{ runner.os }}-php-
+          CLASS_FILE="src/code/class-i-order-terms.php"
+          README_FILE="src/readme.txt"
+          CLASS_VER=$(grep -Po "const\s+PLUGIN_VERSION\s*=\s*'[^']+'" "$CLASS_FILE" | grep -Po "'\K[^']+(?=')")
+          README_VER=$(grep -Po "^\s*Stable tag:\s*\K[^\s]+" "$README_FILE" | head -n1)
 
-            - name: Install dependencies
-              run: composer test-init
+          echo "Main plugin version: $VERSION"
+          echo "Class version: $CLASS_VER"
+          echo "Stable version: $README_VER"
 
-#            - name: Static analysis
-#              run: composer qa
+          if [ -z "$VERSION" ] || [ -z "$CLASS_VER" ] || [ -z "$README_VER" ]; then
+            echo "Could not parse versions from files (v='$VERSION', class='$CLASS_VER', readme='$README_VER')." >&2
+            exit 1
+          fi
+          if [ "$VERSION" != "$CLASS_VER" ] || [ "$VERSION" != "$README_VER" ]; then
+            echo "Version mismatch: v=$VERSION, class=$CLASS_VER, readme=$README_VER" >&2
+            exit 1
+          fi
+          echo "All versions match!"
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          ini-values: date.timezone='UTC'
+          extensions: posix, dom, curl, libxml, mbstring, zip, pcntl, pdo, pgsql, pdo_pgsql, bcmath, soap, intl, gd, exif, iconv, imagick
+          coverage: pcov
+          tools: composer:v2
+
+      - name: Add PHP symlink for php84
+        run: sudo ln -s /usr/bin/php /usr/bin/php84
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Run PHP Lint
+        uses: overtrue/phplint@10.0
+        with:
+          path: ./src
+
+      # - name: Cache Composer packages
+      #  uses: actions/cache@v3
+      #  with:
+      #      path: vendor
+      #      key: ${{ runner.os }}-php-${{ hashFiles('composer.lock') }}
+      #      restore-keys: |
+      #          ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: composer test-init
+
+      # - name: Static analysis
+      #  run: composer qa
