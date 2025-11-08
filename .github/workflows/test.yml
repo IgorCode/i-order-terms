@@ -6,7 +6,55 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: {% raw %}${{ github.head_ref || github.run_id }}{% endraw %}
+  cancel-in-progress: true
+
 jobs:
+  version_check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Read plugin version
+        id: current_version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MAIN_FILE="src/i-order-terms.php"
+          PLUGIN_VERSION=$(grep -Po "^\s*\*\s*Version:\s*\K[^\s]+" "$MAIN_FILE" | head -n1)
+          echo "Plugin version: $PLUGIN_VERSION"
+          echo "version=$PLUGIN_VERSION" >> $GITHUB_ENV
+
+      - name: Check plugin versions match
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERSION="${{ steps.current_version.outputs.version }}"
+
+          CLASS_FILE="src/code/class-i-order-terms.php"
+          README_FILE="src/readme.txt"
+          CLASS_VER=$(grep -Po "const\s+PLUGIN_VERSION\s*=\s*'[^']+'" "$CLASS_FILE" | grep -Po "'\K[^']+(?=')")
+          README_VER=$(grep -Po "^\s*Stable tag:\s*\K[^\s]+" "$README_FILE" | head -n1)
+
+          echo "Main plugin version: $VERSION"
+          echo "Class version: $CLASS_VER"
+          echo "Stable version: $README_VER"
+
+          if [ -z "$CLASS_VER" ] || [ -z "$VERSION" ] || [ -z "$README_VER" ]; then
+            echo "Could not parse versions from files (class='$CLASS_VER', header='$FILE_VER', readme='$README_VER')." >&2
+            exit 1
+          fi
+          if [ "$VERSION" != "$CLASS_VER" ] || [ "$VERSION" != "$README_VER" ]; then
+            echo "Version mismatch: header=$VERSION, class=$CLASS_VER, readme_stable_tag=$README_VER" >&2
+            exit 1
+          fi
+          echo "All versions match!"
+
   test:
     runs-on: ubuntu-latest
 
