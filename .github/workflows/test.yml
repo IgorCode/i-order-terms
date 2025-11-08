@@ -45,12 +45,12 @@ jobs:
           echo "Class version: $CLASS_VER"
           echo "Stable version: $README_VER"
 
-          if [ -z "$CLASS_VER" ] || [ -z "$VERSION" ] || [ -z "$README_VER" ]; then
-            echo "Could not parse versions from files (class='$CLASS_VER', header='$FILE_VER', readme='$README_VER')." >&2
+          if [ -z "$VERSION" ] || [ -z "$CLASS_VER" ] || [ -z "$README_VER" ]; then
+            echo "Could not parse versions from files (v='$VERSION', class='$CLASS_VER', readme='$README_VER')." >&2
             exit 1
           fi
           if [ "$VERSION" != "$CLASS_VER" ] || [ "$VERSION" != "$README_VER" ]; then
-            echo "Version mismatch: header=$VERSION, class=$CLASS_VER, readme_stable_tag=$README_VER" >&2
+            echo "Version mismatch: v=$VERSION, class=$CLASS_VER, readme=$README_VER" >&2
             exit 1
           fi
           echo "All versions match!"
