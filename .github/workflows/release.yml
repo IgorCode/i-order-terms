@@ -1,4 +1,4 @@
-name: Deploy to WordPress.org Repository
+name: Deploy to WordPress.org
 
 on:
   release:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Build
+      - name: Build release
         run: |
           npm install
 
@@ -24,7 +24,7 @@ jobs:
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
           generate-zip: true
-          dry-run: true
+          dry-run: false
         env:
           BUILD_DIR: ./release/trunk
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}

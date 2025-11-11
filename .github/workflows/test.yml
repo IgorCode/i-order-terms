@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   version_check:
+    name: Check plugin version
     runs-on: ubuntu-latest
 
     steps:
@@ -56,6 +57,7 @@ jobs:
           echo "All versions match!"
 
   test:
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
