@@ -12,12 +12,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-#      # Optional: If your plugin is using composer dependencies, we want to include them
-#      # WITHOUT the dev dependencies.
-#      - name: Build
-#        run: |
-#          npm install
-#          npm run build
+      - name: Build
+        run: |
+          npm install
+
+          mkdir -p release/trunk
+          grunt release:build
 
       - name: WordPress Plugin Deploy
         id: deploy
@@ -26,6 +26,7 @@ jobs:
           generate-zip: true
           dry-run: true
         env:
+          BUILD_DIR: ./release/trunk
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
 
