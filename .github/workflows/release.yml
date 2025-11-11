@@ -17,7 +17,7 @@ jobs:
           npm install
 
           mkdir -p release/trunk
-          grunt release:build
+          grunt build:release
 
       - name: WordPress Plugin Deploy
         id: deploy
