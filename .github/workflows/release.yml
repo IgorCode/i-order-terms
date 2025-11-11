@@ -1,4 +1,4 @@
-name: Deploy to WordPress.org Repository
+name: Deploy to WordPress.org
 
 on:
   release:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Build
+      - name: Build release
         run: |
           npm install
 
