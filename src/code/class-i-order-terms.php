@@ -17,7 +17,7 @@ if ( !class_exists( 'I_Order_Terms' ) ) {
 class I_Order_Terms
 {
 	const PLUGIN_NAME = 'I Order Terms';
-	const PLUGIN_VERSION = '1.5.0';
+	const PLUGIN_VERSION = '1.5.2';
 	const WP_MIN_VERSION = '3.5';
 	const PLUGIN_BASENAME = 'i-order-terms/i-order-terms.php';
 	const PLUGIN_OPTIONS_PAGE = 'iorderterms_general';
@@ -27,12 +27,12 @@ class I_Order_Terms
 	/** @var string Plugin URL */
 	private $plugin_url;
 
-	/** @var array List of notices for admin users */
-	private $notices = array();
-	/** @var array Taxonomies list */
-	private $taxonomies = array();
-	/** @var array Taxonomies that require custom sorting */
-	private $taxonomies_registered = array();
+	/** @var string[] List of notices for admin users */
+	private $notices = [];
+	/** @var string[] Taxonomies list */
+	private $taxonomies = [];
+	/** @var string[] Taxonomies that require custom sorting */
+	private $taxonomies_registered = [];
 
 
 	/**
@@ -230,7 +230,7 @@ class I_Order_Terms
 		// default sorting is to use custom order
 		if ( isset( $args['orderby'] ) && $args['orderby'] !== 'name' ) return $clauses;
 
-		// accept only single taxonomy queries & only if taxonomy is registered for custom sorting
+		// accept only single taxonomy queries and only if taxonomy is registered for custom sorting
 		if ( /* count( $taxonomies ) !== 1 || */ !in_array( $taxonomies[0], $this->taxonomies ) ) return $clauses;
 
 		// user sorting by a column
