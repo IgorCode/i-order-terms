@@ -4,7 +4,7 @@ Tags: sort, order, terms, taxonomy
 Requires PHP: 5.6
 Requires at least: 3.5
 Tested up to: 6.8
-Stable tag: 1.5.0
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,8 @@ Please make sure to include plugin version when reporting bugs.
 2. Settings section where you can select which taxonomy should be sortable.
 
 == Changelog ==
+= 1.5.2 =
+* Fixed version label
 = 1.5.1 =
 * Add nonce for AJAX requests to prevent CSRF attacks
 * Force AJAX message as text content
@@ -104,6 +106,8 @@ Please make sure to include plugin version when reporting bugs.
 * Initial release
 
 == Upgrade Notice ==
+= 1.5.2 =
+* Fixed version label
 = 1.5.1 =
 * Add nonce for AJAX requests to prevent CSRF attacks
 * Force AJAX message as text content
