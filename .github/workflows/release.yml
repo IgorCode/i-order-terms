@@ -33,7 +33,7 @@ jobs:
       # After the deploy, we also want to create a zip and upload it to the release on GitHub. We don't want
       # users to have to go to the repository to find our plugin :).
       - name: Upload release asset
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
