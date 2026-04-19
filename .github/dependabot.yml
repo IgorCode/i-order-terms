@@ -21,3 +21,6 @@ updates:
       npm:
         patterns:
           - '*'
+    ignore:
+      - dependency-name: 'time-grunt'
+        versions: ['>=2']
