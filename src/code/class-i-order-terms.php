@@ -487,7 +487,7 @@ class I_Order_Terms
 		if ( !current_user_can( 'manage_categories' ) ) return;
 
 		// Fetch taxonomy name
-		$taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_STRING );
+		$taxonomy = filter_input( INPUT_GET, 'taxonomy', FILTER_SANITIZE_SPECIAL_CHARS );
 
 		// Load assets only on taxonomy screen and when orderby is not selected
 		if ( empty( $_GET['orderby'] ) && !empty( $taxonomy ) && in_array( $taxonomy, $this->taxonomies ) ) {
@@ -582,7 +582,7 @@ class I_Order_Terms
 			exit( $this->ajax_response( 'error', __( 'Security check failed. Please reload the page and try again.', 'i-order-terms' ) ) );
 		}
 
-		$taxonomy = filter_input( INPUT_POST, 'taxonomy', FILTER_SANITIZE_STRING );
+		$taxonomy = filter_input( INPUT_POST, 'taxonomy', FILTER_SANITIZE_SPECIAL_CHARS );
 		$term_id = filter_input( INPUT_POST, 'term_id', FILTER_SANITIZE_NUMBER_INT );
 		$term_prev_id = filter_input( INPUT_POST, 'term_prev_id', FILTER_SANITIZE_NUMBER_INT );
 		$term_next_id = filter_input( INPUT_POST, 'term_next_id', FILTER_SANITIZE_NUMBER_INT );
