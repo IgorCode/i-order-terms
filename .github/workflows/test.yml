@@ -80,7 +80,7 @@ jobs:
         run: composer validate --strict
 
       - name: Run PHP Lint
-        uses: overtrue/phplint@9.7.2
+        uses: overtrue/phplint@9.8
         with:
           path: ./src
 
