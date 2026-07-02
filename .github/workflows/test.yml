@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Read plugin version
         id: current_version
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install PHP 8.4
         uses: shivammathur/setup-php@v2
@@ -80,7 +80,7 @@ jobs:
         run: composer validate --strict
 
       - name: Run PHP Lint
-        uses: overtrue/phplint@9.7.2
+        uses: overtrue/phplint@9.8
         with:
           path: ./src
 
